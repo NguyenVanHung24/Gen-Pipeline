@@ -1,0 +1,250 @@
+[
+  {
+    "id": 1,
+    "type": "secret-scan",
+    "name": "Secret Scanning",
+    "contentName": "Secret Scanning > Detect secrets and sensitive information in source code",
+    "defaultImage": "/Git-leak.jpg",
+    "defaultTool": "Git-leak",
+    "phase": "Secret Scanning",
+    "date": {
+      "from": "01/06",
+      "to": "07/06"
+    },
+    
+    "previous": [],
+    "data": {
+      "x": 100,
+      "y": 300,
+      "target": 100,
+      "potentialTarget": 100,
+      "percentOK": {
+        "label": "Issues Found",
+        "value": 15
+      },
+      "analytics": [
+        {
+          "label": "Critical",
+          "color": "#dc3545",
+          "value": 15
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "type": "Software Composition Analysis",
+    "name": "Software Composition Analysis",
+    "contentName": "Software Composition Analysis > Analyze dependencies for vulnerabilities",
+    "defaultImage": "/DependencyCheck.png",
+    "defaultTool": "DependencyCheck",
+    "phase": "Software Composition Analysis",
+    "date": {
+      "from": "07/06",
+      "to": "14/06"
+    },
+    "previous": [],
+    "data": {
+      "x": 300,
+      "y": 100,
+      "target": 100,
+      "potentialTarget": 100,
+      "percentOK": {
+        "label": "Dependencies Scanned",
+        "value": 85
+      },
+      "analytics": [
+        {
+          "label": "Vulnerable",
+          "color": "#ffc107",
+          "value": 25
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "type": "Static Application Security Testing",
+    "name": "Static Application Security Testing",
+    "contentName": "Static Application Security Testing > Analyze source code for vulnerabilities",
+    "defaultImage": "/Sonaqube.png",
+    "defaultTool": "Sonaqube",
+    "phase": "Static Application Security Testing",
+    "date": {
+      "from": "14/06",
+      "to": "21/06"
+    },
+    
+    "previous": [],
+    "data": {
+      "target": 100,
+      "x": 500,
+      "y": 100,
+      "potentialTarget": 100,
+      "percentOK": {
+        "label": "Code Coverage",
+        "value": 80
+      },
+      "analytics": [
+        {
+          "label": "Issues",
+          "color": "#fd7e14",
+          "value": 30
+        }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "type": "Dynamic Application Security Testing",
+    "name": "Dynamic Application Security Testing",
+    "contentName": "Dynamic Application Security Testing > Test running application for vulnerabilities", 
+    "defaultImage": "/OWASPZAP.png",
+    "defaultTool": "OWASPZAP",
+    "phase": "Dynamic Application Security Testing",
+    "date": {
+      "from": "21/06",
+      "to": "28/06"
+    },
+    "previous": [],
+    "data": {
+      "x": 800,
+      "y": 100,
+      "target": 100,
+      "potentialTarget": 100,
+      "percentOK": {
+        "label": "Endpoints Tested",
+        "value": 90
+      },
+      "analytics": [
+        {
+          "label": "Vulnerabilities",
+          "color": "#dc3545", 
+          "value": 20
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "type": "Container Security",
+    "name": "Container Security",
+    "contentName": "Container Security > Scan container images for vulnerabilities",
+    "srcImage": "/container.png",
+    "defaultImage": "/Trivy.png",
+    "defaultTool": "Trivy",
+    "phase": "Container Security",
+    "date": {
+      "from": "28/06",
+      "to": "05/07"
+    },
+    "previous": [],
+    "data": {
+      "x": 1000,
+      "y": 300,
+      "target": 100,
+      "potentialTarget": 100,
+      "percentOK": {
+        "label": "Images Scanned",
+        "value": 95
+      },
+      "analytics": [
+        {
+          "label": "Issues",
+          "color": "#ffc107",
+          "value": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "type": "iac-scan",
+    "name": "IaC Scan",
+    "contentName": "Infrastructure as Code Scan > Analyze infrastructure code for security issues",
+    "srcImage": "/iac.png",
+    "defaultImage": "/Snyk.png",
+    "defaultTool": "Snyk",
+    "phase": "Infrastructure as Code Scan",
+    "date": {
+      "from": "12/07",
+      "to": "19/07"
+    },
+    "previous": [],
+    "data": {
+      "x": 300,
+      "y": 500,
+      "target": 100,
+      "potentialTarget": 100,
+      "percentOK": {
+        "label": "Templates Scanned",
+        "value": 100
+      },
+      "analytics": [
+        {
+          "label": "Misconfigurations",
+          "color": "#fd7e14",
+          "value": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "type": "vulnerability",
+    "name": "Vulnerability Management",
+    "contentName": "Vulnerability Management > Track and manage security issues",
+    "srcImage": "/vulnerability.png",
+    "defaultImage": "/Vault.png",
+    "defaultTool": "Vault",
+    "phase": "Vulnerability Management",
+    "date": {
+      "from": "05/07",
+      "to": "12/07"
+    },
+    "previous": [
+      {
+        "stepId": 1,
+        "label": "Detect Secret"
+      },
+      {
+        "stepId": 2,
+        "label": "Vulnerable Package"
+      },
+      {
+        "stepId": 3,
+        "label": "Code Issue"
+      },
+      {
+        "stepId": 4,
+        "count": 10,
+        "label": "Container Issues"
+      },
+      {
+        "stepId": 5,
+        "label": "Dynamic Issue"
+      },
+      {
+        "stepId": 6,
+        "label": "Infrastructe Issue"
+      }
+    ],
+    "data": {
+      "x": 500,
+      "y": 300,
+      "target": 100,
+      "potentialTarget": 100,
+      "percentOK": {
+        "label": "Issues Managed",
+        "value": 75
+      },
+      "analytics": [
+        {
+          "label": "Resolved",
+          "color": "#28a745",
+          "value": 85
+        }
+      ]
+    }
+  }
+]
