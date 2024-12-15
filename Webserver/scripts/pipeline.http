@@ -1,0 +1,89 @@
+
+### Variables
+@baseUrl = http://localhost:3001/api
+@platformId = 675ea7eff7d855682c6f33ff
+@toolId = replace_with_tool_id
+@pipelineId = replace_with_pipeline_id
+
+### =================== Platform CRUD Operations ===================
+
+### =================== Pipeline Search Operations ===================
+
+### Search Pipeline by Platform
+GET {{baseUrl}}/pipelines/search?platform=GitHub
+
+### Search Pipeline by Tool
+GET {{baseUrl}}/pipelines/search?tool=Git-leak
+
+### Search Pipeline by Stage
+GET {{baseUrl}}/pipelines/search?stage=Secret Scan
+
+### Search Pipeline by Language
+GET {{baseUrl}}/pipelines/search?language=javascript
+
+### Search Pipeline - Combined Filters
+GET {{baseUrl}}/pipelines/search?platform=GitHub&tool=Git-leak&stage=Secret Scan&language=javascript
+
+### Search Pipeline - Platform and Language
+GET {{baseUrl}}/pipelines/search?platform=GitHub&language=javascript
+
+### Search Pipeline - Tool and Stage
+GET {{baseUrl}}/pipelines/search?tool=Git-leak&stage=Secret Scan
+
+### Search Pipeline with Version
+GET {{baseUrl}}/pipelines/search?platform=GitHub&tool=Git-leak&stage=Secret Scan&language=javascript&version=1.0.0
+
+### Example responses:
+
+# Single filter response:
+# {
+#     "count": 1,
+#     "pipelines": [
+#         {
+#             "id": "...",
+#             "name": "Security Scan Pipeline",
+#             "platform": {
+#                 "name": "GitHub",
+#                 "supported_languages": ["JavaScript", "Python", "Java"],
+#                 "config": {
+#                     "api_url": "https://api.github.com",
+#                     "webhook_enabled": true
+#                 }
+#             },
+#             "language": "javascript",
+#             "stage": "Secret Scan",
+#             "version": "1.0.0",
+#             "tools": [
+#                 {
+#                     "name": "Git-leak",
+#                     "version": "8.15.2",
+#                     "config": {
+#                         "severity_levels": ["HIGH", "CRITICAL"],
+#                         "scan_timeout": 300,
+#                         "type": "Secret Scanner"
+#                     }
+#                 }
+#             ],
+#             "yaml_content": "...",
+#             "created_at": "2024-01-12T10:30:00.000Z",
+#             "updated_at": "2024-01-12T10:30:00.000Z"
+#         }
+#     ]
+# }
+
+# No results response:
+# {
+#     "message": "No pipelines found matching the criteria",
+#     "criteria": {
+#         "platform": "GitHub",
+#         "tool": "Git-leak",
+#         "stage": "Secret Scan",
+#         "language": "python"
+#     }
+# }
+
+# Error response:
+# {
+#     "error": "Invalid platform name",
+#     "message": "Platform not found: InvalidPlatform"
+# }

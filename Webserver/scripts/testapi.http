@@ -1,0 +1,152 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+@platformId = 675ea7eff7d855682c6f33ff
+@toolId = replace_with_tool_id
+@pipelineId = replace_with_pipeline_id
+
+### =================== Platform CRUD Operations ===================
+
+### Create Platform
+POST {{baseUrl}}/platforms
+Content-Type: application/json
+
+{
+    "name": "GitHub",
+    "supported_languages": ["JavaScript", "Python", "Java", "Go", "Ruby"],
+    "config": {
+        "api_url": "https://api.github.com",
+        "webhook_enabled": true,
+        "scan_frequency": "daily"
+    }
+}
+
+### Get All Platforms
+GET {{baseUrl}}/platforms
+
+### Get Platform by ID
+GET {{baseUrl}}/platforms/{{platformId}}
+
+### Update Platform
+PUT {{baseUrl}}/platforms/{{platformId}}
+Content-Type: application/json
+
+{
+    "name": "GitHub Enterprise",
+    "supported_languages": ["JavaScript", "Python", "Java", "Go", "Ruby", "PHP"],
+    "config": {
+        "api_url": "https://github.enterprise.com/api",
+        "webhook_enabled": true,
+        "scan_frequency": "hourly"
+    }
+}
+
+### Delete Platform
+DELETE {{baseUrl}}/platforms/{{platformId}}
+
+### =================== Tool CRUD Operations ===================
+
+### Create Tool
+POST {{baseUrl}}/tools
+Content-Type: application/json
+
+{
+    "name": "Git-leak",
+    "version": "8.15.2",
+    "config": {
+        "severity_levels": ["HIGH", "CRITICAL"],
+        "scan_timeout": 300,
+        "exclude_patterns": [".env", "*.log"],
+        "type": "Secret Scanner",
+        "target": "Git History",
+        "analytics": 85
+    }
+}
+
+### Get All Tools
+GET {{baseUrl}}/tools
+
+### Get Tool by ID
+GET {{baseUrl}}/tools/{{toolId}}
+
+### Update Tool
+PUT {{baseUrl}}/tools/{{toolId}}
+Content-Type: application/json
+
+{
+    "version": "8.16.0",
+    "config": {
+        "severity_levels": ["HIGH", "CRITICAL", "MEDIUM"],
+        "scan_timeout": 600,
+        "exclude_patterns": [".env", "*.log", "node_modules"],
+        "type": "Secret Scanner",
+        "target": "Git History",
+        "analytics": 90
+    }
+}
+
+### Delete Tool
+DELETE {{baseUrl}}/tools/{{toolId}}
+
+### =================== Pipeline CRUD Operations ===================
+
+### Create Pipeline
+POST {{baseUrl}}/pipelines
+Content-Type: application/json
+
+{
+    "name": "Security Scan Pipeline",
+    "tools": ["{{toolId}}"],
+    "platform": "{{platformId}}",
+    "language": "javascript",
+    "stage": "Secret Scan",
+    "version": "1.0.0",
+    "yaml_content": "name: Security Scan Pipeline\non:\n  push:\n    branches: [ main ]\njobs:\n  security_scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v2\n      - name: Run Security Scan\n        uses: security/scan-action@v1"
+}
+
+### Get All Pipelines
+GET {{baseUrl}}/pipelines
+
+### Get Pipeline by ID
+GET {{baseUrl}}/pipelines/{{pipelineId}}
+
+### Update Pipeline
+PUT {{baseUrl}}/pipelines/{{pipelineId}}
+Content-Type: application/json
+
+{
+    "name": "Enhanced Security Scan Pipeline",
+    "tools": ["{{toolId}}"],
+    "language": "javascript",
+    "stage": "security",
+    "yaml_content": "name: Enhanced Security Scan Pipeline\non:\n  push:\n    branches: [ main, develop ]"
+}
+
+### Delete Pipeline
+DELETE {{baseUrl}}/pipelines/{{pipelineId}}
+
+### =================== Pipeline Special Operations ===================
+
+### Search Pipelines (Simple)
+GET {{baseUrl}}/pipelines/search?platform=github&language=javascript
+
+### Search Pipelines (Advanced)
+GET {{baseUrl}}/pipelines/search?platform=github&language=javascript&toolType=Secret Scanner&severity=HIGH&analytics=85&toolCount=2
+
+### Generate YAML
+POST {{baseUrl}}/generate-yaml
+Content-Type: application/json
+
+{
+    "name": "Custom Pipeline",
+    "tools": ["{{toolId}}"],
+    "platform": "{{platformId}}",
+    "language": "javascript"
+}
+
+### =================== Development Operations ===================
+
+### Clean Database (Development Only)
+POST {{baseUrl}}/dev/clean-database
+
+### Test API
+GET {{baseUrl}}/test
