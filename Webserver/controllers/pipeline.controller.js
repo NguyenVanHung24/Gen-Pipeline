@@ -119,7 +119,6 @@ exports.searchPipelines = async (req, res) => {
         
         // Build pipeline query
         let pipelineQuery = {};
-        let toolQuery = {};
         
         // Platform filter
         if (platform) {
@@ -179,18 +178,19 @@ exports.searchPipelines = async (req, res) => {
             }
         }
 
-        // Version filter (stored in platform config)
+        // Version filter
         if (version) {
-            pipelineQuery['platform.config.version'] = version;
+            pipelineQuery.version = version;
         }
 
         // Find pipelines with populated references
         const pipelines = await Pipeline.find(pipelineQuery)
             .populate('platform')
             .populate('tools')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .exec(); // Add explicit exec() call
 
-        if (!pipelines.length) {
+        if (!pipelines || pipelines.length === 0) {
             return res.status(404).json({ 
                 message: 'No pipelines found matching the criteria',
                 criteria: req.query
@@ -201,11 +201,11 @@ exports.searchPipelines = async (req, res) => {
         const formattedPipelines = pipelines.map(pipeline => ({
             id: pipeline._id,
             name: pipeline.name,
-            platform: {
+            platform: pipeline.platform ? {
                 name: pipeline.platform.name,
                 supported_languages: pipeline.platform.supported_languages,
                 config: pipeline.platform.config
-            },
+            } : null,
             language: pipeline.language,
             stage: pipeline.stage,
             tools: pipeline.tools.map(tool => ({
@@ -226,7 +226,7 @@ exports.searchPipelines = async (req, res) => {
     } catch (error) {
         console.error('Error searching pipelines:', error);
         res.status(500).json({ 
-            error: 'Internal server error',
+            error: 'Error searching pipelines',
             message: error.message 
         });
     }

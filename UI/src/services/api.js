@@ -50,6 +50,19 @@ class PipelineService {
       throw error;
     }
   }
+
+  // Search pipelines with filters
+  static async searchPipelines(filters) {
+    try {
+      // Convert filters object to query string
+      const queryParams = new URLSearchParams(filters).toString();
+      const response = await axios.get(`${API_BASE_URL}/pipelines/search?${queryParams}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error searching pipelines:', error);
+      throw error;
+    }
+  }
 }
 
 export default PipelineService; 
