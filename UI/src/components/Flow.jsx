@@ -6,10 +6,14 @@ import FullNode from './FullNode';
 import Popover from './Popover';
 import { generateFlow } from '../utils';
 import DropTargetNode from './DropTargetNode';
+import PipelineService from '../services/api';
 
 const Flow = ({ mode, steps }) => {
   const [stepDetails, setStepDetails] = useState(null);
   const [nodesImageData, setNodesImageData] = useState({});
+  const [pipelineYaml, setPipelineYaml] = useState('');
+  const [showDataModal, setShowDataModal] = useState(false);
+  const [currentData, setCurrentData] = useState(null);
 
   const handleNodeImageUpdate = useCallback((nodeId, imageData) => {
     // This function updates the image data for a specific node
@@ -88,54 +92,174 @@ const Flow = ({ mode, steps }) => {
     return elements;
   }, [mode, steps, handleNodeImageUpdate]);
 
+  // Function to get pipeline YAML
+  const generatePipeline = async () => {
+    try {
+      const response = await PipelineService.generatePipelineYaml(nodesImageData);
+      setPipelineYaml(response.yaml);
+      console.log('Generated Pipeline YAML:', response.yaml);
+      
+      // You could also show this in a modal or copy to clipboard
+      navigator.clipboard.writeText(response.yaml)
+        .then(() => alert('Pipeline YAML copied to clipboard!'))
+        .catch(err => console.error('Failed to copy:', err));
+        
+    } catch (error) {
+      console.error('Error generating pipeline:', error);
+    }
+  };
+
+  // Function to handle getting all node data
+  const handleGetNodesData = () => {
+    const nodesData = getAllNodesData();
+    setCurrentData(nodesData);
+    setShowDataModal(true);
+  };
+
   return (
-    <div style={{
-      height: '100%',
-      backgroundColor: '#efefef',
-      position: 'relative',
-      display: 'flex'
-    }}>
+    <>
       <div style={{
-        width: '200px',
-        flexShrink: 0,
-        borderRight: '1px solid #ccc'
+        height: '100%',
+        backgroundColor: '#efefef',
+        position: 'relative',
+        display: 'flex'
       }}>
-        <DropTargetNode />
-        <button
-          onClick={getAllNodesData}
-          style={{
-            margin: '10px',
-            padding: '8px 16px',
-            backgroundColor: '#2E86C1',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Get Nodes Data
-        </button>
+        <div style={{
+          width: '200px',
+          flexShrink: 0,
+          borderRight: '1px solid #ccc'
+        }}>
+          <DropTargetNode />
+          {/* Button container with flex layout */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            padding: '10px'
+          }}>
+            {/* Get Nodes Data button */}
+            <button
+              onClick={handleGetNodesData}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#28a745', // Different color to distinguish
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Get Nodes Data
+            </button>
+            
+            {/* Generate Pipeline button */}
+            <button
+              onClick={generatePipeline}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#2E86C1',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Generate Pipeline
+            </button>
+          </div>
+        </div>
+        <div style={{ flex: 1 }}>
+          <ReactFlow
+            onElementClick={(evt, node) => {
+              if(node.type !== 'smoothstep' && mode === 'profile')
+                setStepDetails({ evt: evt.currentTarget, node });
+            }}
+            nodesDraggable={mode === 'fullscreen'}
+            nodesConnectable={false}
+            elementsSelectable={false}
+            zoomOnPinch={mode === 'fullscreen'}
+            zoomOnScroll={mode === 'fullscreen'}
+            zoomOnDoubleClick={mode === 'fullscreen'}
+            nodeTypes={nodeTypes}
+            elements={elements}
+            defaultZoom={1}
+            minZoom={0.5}
+            maxZoom={2}
+          />
+        </div>
       </div>
-      <div style={{ flex: 1 }}>
-        <ReactFlow
-          onElementClick={(evt, node) => {
-            if(node.type !== 'smoothstep' && mode === 'profile')
-              setStepDetails({ evt: evt.currentTarget, node });
-          }}
-          nodesDraggable={mode === 'fullscreen'}
-          nodesConnectable={false}
-          elementsSelectable={false}
-          zoomOnPinch={mode === 'fullscreen'}
-          zoomOnScroll={mode === 'fullscreen'}
-          zoomOnDoubleClick={mode === 'fullscreen'}
-          nodeTypes={nodeTypes}
-          elements={elements}
-          defaultZoom={1}
-          minZoom={0.5}
-          maxZoom={2}
-        />
-      </div>
-    </div>
+      
+      {/* Modal for displaying node data */}
+      {showDataModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            maxWidth: '80%',
+            maxHeight: '80%',
+            overflow: 'auto'
+          }}>
+            <h3>Current Nodes Data</h3>
+            <pre style={{ 
+              backgroundColor: '#f5f5f5', 
+              padding: '10px',
+              borderRadius: '4px',
+              overflow: 'auto'
+            }}>
+              {JSON.stringify(currentData, null, 2)}
+            </pre>
+            <div style={{ 
+              display: 'flex', 
+              gap: '10px', 
+              justifyContent: 'flex-end',
+              marginTop: '20px'
+            }}>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(JSON.stringify(currentData, null, 2));
+                  alert('Copied to clipboard!');
+                }}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Copy to Clipboard
+              </button>
+              <button
+                onClick={() => setShowDataModal(false)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

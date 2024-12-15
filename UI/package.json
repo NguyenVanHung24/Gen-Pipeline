@@ -9,6 +9,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@material-ui/core": "4.11.4",
+    "axios": "^1.7.9",
     "chart.js": "3.3.2",
     "dagre": "0.8.5",
     "react": "17.0.2",
