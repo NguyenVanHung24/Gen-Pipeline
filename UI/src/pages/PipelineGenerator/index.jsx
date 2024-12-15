@@ -22,6 +22,7 @@ const PipelineGenerator = ({ steps }) => {
                 )}
                 { mode === 'fullscreen' && (
                     <FullScreen steps={steps} />
+                    
                 )}
             </ReactFlowProvider>
             <Outlet />
