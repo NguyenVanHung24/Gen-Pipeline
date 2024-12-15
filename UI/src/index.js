@@ -6,7 +6,6 @@ import Toolbar from './components/Toolbar';
 import CampaignProfile from "./CampaignProfile";
 import FullScreen from "./FullScreen";
 import "./styles.css";
-
 import steps from './campaign';
 
 const App = () => {

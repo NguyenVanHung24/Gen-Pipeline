@@ -209,8 +209,32 @@ const Flow = ({ mode, steps }) => {
             borderRadius: '8px',
             maxWidth: '80%',
             maxHeight: '80%',
-            overflow: 'auto'
+            overflow: 'auto',
+            position: 'relative'
           }}>
+            <div 
+              onClick={() => setShowDataModal(false)}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                cursor: 'pointer',
+                fontSize: '24px',
+                width: '30px',
+                height: '30px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+                backgroundColor: '#f8f9fa',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e6ea'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+            >
+              ×
+            </div>
+
             <h3>Current Nodes Data</h3>
             <pre style={{ 
               backgroundColor: '#f5f5f5', 
