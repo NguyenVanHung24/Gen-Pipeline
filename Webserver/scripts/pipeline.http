@@ -10,7 +10,7 @@
 ### =================== Pipeline Search Operations ===================
 
 ### Search Pipeline by Platform
-GET {{baseUrl}}/pipelines/search?platform=GitHub
+GET {{baseUrl}}/pipelines/search?platform=GitHub&tool=Git-leak&language=javascript&stage=Secret Scan
 
 ### Search Pipeline by Tool
 GET {{baseUrl}}/pipelines/search?tool=Git-leak

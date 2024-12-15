@@ -126,22 +126,14 @@ DELETE {{baseUrl}}/pipelines/{{pipelineId}}
 
 ### =================== Pipeline Special Operations ===================
 
-### Search Pipelines (Simple)
-GET {{baseUrl}}/pipelines/search?platform=github&language=javascript
+### Search Pipeline by Platform and Stage
+GET {{baseUrl}}/pipelines/search?platform=GitHub&stage=Secret Scan
 
-### Search Pipelines (Advanced)
-GET {{baseUrl}}/pipelines/search?platform=github&language=javascript&toolType=Secret Scanner&severity=HIGH&analytics=85&toolCount=2
+### Search Pipeline by Tool and Language
+GET {{baseUrl}}/pipelines/search?tool=Git-leak&language=javascript
 
-### Generate YAML
-POST {{baseUrl}}/generate-yaml
-Content-Type: application/json
-
-{
-    "name": "Custom Pipeline",
-    "tools": ["{{toolId}}"],
-    "platform": "{{platformId}}",
-    "language": "javascript"
-}
+### Search Pipeline with all filters
+GET {{baseUrl}}/pipelines/search?platform=GitHub&tool=Git-leak&stage=Secret Scan&language=javascript&version=1.0.0
 
 ### =================== Development Operations ===================
 

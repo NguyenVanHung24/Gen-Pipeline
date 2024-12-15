@@ -1,0 +1,6 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+@platformId = 675ea7eff7d855682c6f33ff
+
+### Platform CRUD Operations
+# All platform-related requests 
