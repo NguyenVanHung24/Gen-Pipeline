@@ -1,4 +1,4 @@
-import { Handle }  from 'react-flow-renderer';
+import { Handle } from 'react-flow-renderer';
 import { useState, useEffect } from 'react';
 
 const availableImages = [
@@ -92,85 +92,71 @@ const Node = ({ data: nodeData }) => {
   return (
     <>
       <div 
-        className={`node-container ${!hasImage ? 'empty-node' : ''}`}
+        className={`bg-white rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl 
+                   node-container ${!hasImage ? 'empty-node hover:border-primary-300' : ''}`}
+        style={{ 
+          minWidth: '200px',
+          minHeight: '150px',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
+        }}
         onDragOver={handleDragOver}
         onDragLeave={(e) => e.currentTarget.classList.remove('can-drop')}
         onDrop={handleDrop}
       >
-        <div className={`node-status node-status-${nodeData.phase.toLowerCase()}`}>
+        <div className="px-4 py-2 text-sm font-medium text-gray-700 text-center rounded-t-xl">
           {nodeData.phase}
         </div>
+
         {nodeData.previous.length > 0 && (
           <Handle
             type="target"
             position="left"
+            className="!w-3 !h-3 !border-2 !border-gray-300 !bg-white hover:!border-primary-500"
             style={{
-              border: '1px solid rgb(152,152,152)',
-              backgroundColor: 'white',
+              left: '-12px'
             }}
           />
         )}
-        <div style={{
-          height: '100%',
-          width: '100%',
-          marginTop: 7,
-          flex: 3,
-          display: "flex",
-          flexDirection: 'column',
-          alignItems: 'center',
-          position: 'relative',
-        }}>
+
+        <div className="p-4 flex flex-col items-center">
           {hasImage ? (
             <div
               draggable="true"
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
-              className="node-image-container"
+              className="node-image-container group cursor-grab active:cursor-grabbing"
             >
               <img 
                 src={currentImage} 
                 alt={nodeData.type}
-                className="node-image"
-                style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+                className="w-12 h-12 object-contain rounded-lg shadow-sm 
+                         transition-all duration-200 group-hover:scale-105 group-hover:shadow-md"
               />
-              {/* <div className="node-analytics">
-                <span>{nodeData.data.analytics[0]?.value || 0}</span>
-              </div> */}
+              {currentTool && (
+                <div className="mt-2 text-sm font-medium text-gray-700 text-center
+                              transition-colors duration-200 group-hover:text-primary-600">
+                  {currentTool}
+                </div>
+              )}
             </div>
           ) : (
-            <div className="empty-image-container">
-              <span>Drop here</span>
-            </div>
-          )}
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between", width: '100%', marginTop: '10px'}}>
-            {/* <div style={{ fontSize: '10px', paddingLeft: 5}} title="Target">
-              <i className="fas fa-bullseye" style={{ color: '#2E86C1', paddingRight: 3}}></i>
-              {nodeData.data.target}
-            </div> */}
-            {/* <div style={{ fontSize: '10px', paddingRight: 5}} title={nodeData.data.percentOK?.label}>
-              <i className="fas fa-check-circle" style={{ color: '#2E86C1', paddingRight: 3}}></i>
-              {nodeData.data.percentOK?.value} %
-            </div> */}
-          </div>
-          {currentTool && (
-            <div style={{ 
-              fontSize: '16px', 
-              color: '#000', 
-              textAlign: 'center',
-              marginTop: '4px'
-            }}>
-              {currentTool}
+            <div className="empty-image-container w-12 h-12 border-2 border-dashed border-gray-300 
+                           rounded-lg flex items-center justify-center text-gray-400
+                           transition-colors duration-200 hover:border-primary-300 hover:text-primary-400
+                           bg-gray-50 hover:bg-gray-100">
+              <span className="text-xs font-medium">Drop here</span>
             </div>
           )}
         </div>
+
         {nodeData.final !== true && (
           <Handle
             type="source"
             position="right"
-            style={{ 
-              border: '1px solid rgb(152,152,152)',
-              backgroundColor: 'white',
-            }}
+            className=""
+            
           />
         )}
       </div>
