@@ -105,19 +105,13 @@ const PipelinePage = () => {
     };
 
     const stages = [
-        'Security Scan',
-        'Software Analysis Scan',
-        'Dependency Scan',
-        'License Scan',
-        'Secret Scan',
-        'Container Scan',
+        'Secret Scanning',
+        'Software Composition Analysis',
+        'Static Application Security Testing',
+        'Dynamic Application Security Testing',
+        'Container Security',
         'Infrastructure as Code Scan',
-        'API Security Scan',
-        'Penetration Testing',
-        'Compliance Scan',
-        'Code Quality Scan',
-        'Unit Testing',
-        'Integration Testing'
+        'Vulnerability Management'
     ];
 
     return (
@@ -157,15 +151,15 @@ const PipelinePage = () => {
                     <div style={{ marginBottom: '10px' }}>
                         <label>Tools:</label>
                         <select
-                            multiple
                             value={formData.tools}
                             onChange={(e) => setFormData({
                                 ...formData,
-                                tools: Array.from(e.target.selectedOptions, option => option.value)
+                                tools: [e.target.value]
                             })}
                             required
                             style={{ marginLeft: '10px' }}
                         >
+                            <option value="">Select Tool</option>
                             {tools.map(tool => (
                                 <option key={tool._id} value={tool._id}>
                                     {tool.name} ({tool.version})

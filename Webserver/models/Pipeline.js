@@ -21,7 +21,7 @@ const PipelineSchema = new mongoose.Schema({
     stage: {
         type: String,
         required: true,
-        enum: ['Security Scan', 'Software Analysis Scan', 'Dependency Scan', 'License Scan', 'Secret Scan', 'Container Scan', 'Infrastructure as Code Scan', 'API Security Scan', 'Penetration Testing', 'Compliance Scan', 'Code Quality Scan', 'Unit Testing', 'Integration Testing']
+        enum: ['Secret Scanning', 'Software Composition Analysis', 'Static Application Security Testing', 'Dynamic Application Security Testing', 'Container Security', 'Infrastructure as Code Scan', 'Vulnerability Management']
     },
     version: {
         type: String,

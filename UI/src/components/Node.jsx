@@ -36,6 +36,7 @@ const Node = ({ data: nodeData }) => {
         currentImage,
         currentTool,
         hasImage,
+        phase: nodeData.phase,
         type: nodeData.type,
         analytics: nodeData.data.analytics[0]?.value || 0,
         target: nodeData.data.target
@@ -49,6 +50,7 @@ const Node = ({ data: nodeData }) => {
       type: nodeData.type,
       imageSrc: currentImage,
       tool: currentTool,
+      phase: nodeData.phase,
       analytics: nodeData.data.analytics[0]?.value || 0,
       target: nodeData.data.target,
       sourceNodeId: nodeData.id,
@@ -131,9 +133,9 @@ const Node = ({ data: nodeData }) => {
                 className="node-image"
                 style={{ width: '40px', height: '40px', objectFit: 'contain' }}
               />
-              <div className="node-analytics">
+              {/* <div className="node-analytics">
                 <span>{nodeData.data.analytics[0]?.value || 0}</span>
-              </div>
+              </div> */}
             </div>
           ) : (
             <div className="empty-image-container">
@@ -141,19 +143,19 @@ const Node = ({ data: nodeData }) => {
             </div>
           )}
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between", width: '100%', marginTop: '10px'}}>
-            <div style={{ fontSize: '10px', paddingLeft: 5}} title="Target">
+            {/* <div style={{ fontSize: '10px', paddingLeft: 5}} title="Target">
               <i className="fas fa-bullseye" style={{ color: '#2E86C1', paddingRight: 3}}></i>
               {nodeData.data.target}
-            </div>
-            <div style={{ fontSize: '10px', paddingRight: 5}} title={nodeData.data.percentOK?.label}>
+            </div> */}
+            {/* <div style={{ fontSize: '10px', paddingRight: 5}} title={nodeData.data.percentOK?.label}>
               <i className="fas fa-check-circle" style={{ color: '#2E86C1', paddingRight: 3}}></i>
               {nodeData.data.percentOK?.value} %
-            </div>
+            </div> */}
           </div>
           {currentTool && (
             <div style={{ 
-              fontSize: '11px', 
-              color: '#666', 
+              fontSize: '16px', 
+              color: '#000', 
               textAlign: 'center',
               marginTop: '4px'
             }}>

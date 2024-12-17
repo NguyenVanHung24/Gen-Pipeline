@@ -19,7 +19,7 @@
     "sourceNodeId": "fake3",
     "imageSrc": "/DependencyCheck.png", 
     "type": "Dependency Scanner",
-      "tool": "DependencyCheck",
+    "tool": "DependencyCheck",
     "analytics": 78,
     "target": "Dependencies"
   },
@@ -76,6 +76,14 @@
     "imageSrc": "/Trufle-hog.png",
     "type": "Secret Scanner",
     "tool": "Trufle-hog",
+    "analytics": 89,
+    "target": "Source Code"
+  },
+  {
+    "sourceNodeId": "fake11",
+    "imageSrc": "/DefectDojo.png",
+    "type": "Vulnerability Management",
+    "tool": "DefectDojo",
     "analytics": 89,
     "target": "Source Code"
   }

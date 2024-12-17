@@ -8,11 +8,11 @@ const ToolPage = () => {
         name: '',
         version: '',
         config: {
-            severity_levels: [],
+            severity_levels: 'critical, high, medium, low',
             scan_timeout: 300,
-            exclude_patterns: [],
+            exclude_patterns: 'node_modules, dist, build',
             type: '',
-            target: '',
+            target: 'Full repository',
             analytics: 0
         }
     });
@@ -38,8 +38,12 @@ const ToolPage = () => {
                 ...formData,
                 config: {
                     ...formData.config,
-                    severity_levels: formData.config.severity_levels.split(',').map(level => level.trim()),
-                    exclude_patterns: formData.config.exclude_patterns.split(',').map(pattern => pattern.trim())
+                    severity_levels: typeof formData.config.severity_levels === 'string' ? 
+                        formData.config.severity_levels.split(',').map(level => level.trim()) :
+                        formData.config.severity_levels,
+                    exclude_patterns: typeof formData.config.exclude_patterns === 'string' ?
+                        formData.config.exclude_patterns.split(',').map(pattern => pattern.trim()) :
+                        formData.config.exclude_patterns
                 }
             };
 
@@ -74,8 +78,12 @@ const ToolPage = () => {
             version: tool.version,
             config: {
                 ...tool.config,
-                severity_levels: tool.config.severity_levels.join(', '),
-                exclude_patterns: tool.config.exclude_patterns.join(', ')
+                severity_levels: Array.isArray(tool.config.severity_levels) ? 
+                    tool.config.severity_levels.join(', ') : 
+                    tool.config.severity_levels,
+                exclude_patterns: Array.isArray(tool.config.exclude_patterns) ?
+                    tool.config.exclude_patterns.join(', ') :
+                    tool.config.exclude_patterns
             }
         });
     };
@@ -86,9 +94,9 @@ const ToolPage = () => {
             name: '',
             version: '',
             config: {
-                severity_levels: [],
+                severity_levels: 'critical, high, medium, low',
                 scan_timeout: 300,
-                exclude_patterns: [],
+                exclude_patterns: 'node_modules, dist, build',
                 type: '',
                 target: '',
                 analytics: 0
@@ -167,8 +175,7 @@ const ToolPage = () => {
 
                     <div style={{ marginBottom: '10px' }}>
                         <label>Type:</label>
-                        <input
-                            type="text"
+                        <select
                             value={formData.config.type}
                             onChange={(e) => setFormData({
                                 ...formData,
@@ -176,7 +183,16 @@ const ToolPage = () => {
                             })}
                             required
                             style={{ marginLeft: '10px' }}
-                        />
+                        >
+                            <option value="">Select a type</option>
+                            <option value="Secret Scanning">Secret Scanning</option>
+                            <option value="Software Composition Analysis">Software Composition Analysis</option>
+                            <option value="Static Application Security Testing">Static Application Security Testing</option>
+                            <option value="Dynamic Application Security Testing">Dynamic Application Security Testing</option>
+                            <option value="Container Security">Container Security</option>
+                            <option value="Infrastructure as Code Scan">Infrastructure as Code Scan</option>
+                            <option value="Vulnerability Management">Vulnerability Management</option>
+                        </select>
                     </div>
 
                     <div style={{ marginBottom: '10px' }}>
