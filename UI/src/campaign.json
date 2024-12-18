@@ -4,7 +4,7 @@
     "type": "secret-scan",
     "name": "Secret Scanning",
     "contentName": "Secret Scanning > Detect secrets and sensitive information in source code",
-    "defaultImage": "/Git-leak.jpg",
+    "defaultImage": "/tools/Git-leak.jpg",
     "defaultTool": "Git-leak",
     "phase": "Secret Scanning",
     "date": {
@@ -36,7 +36,7 @@
     "type": "Software Composition Analysis",
     "name": "Software Composition Analysis",
     "contentName": "Software Composition Analysis > Analyze dependencies for vulnerabilities",
-    "defaultImage": "/Snyk.png",
+    "defaultImage": "/tools/Snyk.png",
     "defaultTool": "Snyk",
     "phase": "Software Composition Analysis",
     "date": {
@@ -67,7 +67,7 @@
     "type": "Static Application Security Testing",
     "name": "Static Application Security Testing",
     "contentName": "Static Application Security Testing > Analyze source code for vulnerabilities",
-    "defaultImage": "/Sonaqube.png",
+    "defaultImage": "/tools/Sonaqube.png",
     "defaultTool": "Sonaqube",
     "phase": "Static Application Security Testing",
     "date": {
@@ -99,7 +99,7 @@
     "type": "Dynamic Application Security Testing",
     "name": "Dynamic Application Security Testing",
     "contentName": "Dynamic Application Security Testing > Test running application for vulnerabilities", 
-    "defaultImage": "/OWASPZAP.png",
+    "defaultImage": "/tools/OWASPZAP.png",
     "defaultTool": "OWASPZAP",
     "phase": "Dynamic Application Security Testing",
     "date": {
@@ -131,7 +131,7 @@
     "name": "Container Security",
     "contentName": "Container Security > Scan container images for vulnerabilities",
     "srcImage": "/container.png",
-    "defaultImage": "/Trivy.png",
+    "defaultImage": "/tools/Trivy.png",
     "defaultTool": "Trivy",
     "phase": "Container Security",
     "date": {
@@ -162,7 +162,7 @@
     "type": "iac-scan",
     "name": "IaC Scan",
     "contentName": "Infrastructure as Code Scan > Analyze infrastructure code for security issues",
-    "defaultImage": "/CheckCov.png",
+    "defaultImage": "/tools/CheckCov.png",
     "defaultTool": "CheckCov",
     "phase": "Infrastructure as Code Scan",
     "date": {
@@ -193,7 +193,7 @@
     "type": "vulnerability",
     "name": "Vulnerability Management",
     "contentName": "Vulnerability Management > Track and manage security issues",
-    "defaultImage": "/DefectDojo.png",
+    "defaultImage": "/tools/DefectDojo.png",
     "defaultTool": "DefectDojo",
     "phase": "Vulnerability Management",
     "date": {

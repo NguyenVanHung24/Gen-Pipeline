@@ -1,1 +1,153 @@
-trivy.png Trufle-hog.png Vault.png asst.jpg CheckCov.png DependencyCheck.png download.png git-hound.jpg Git-leak.jpg Git-secret.png Snyk.png Sonaqube.png
+{
+    "count": 6,
+    "tools": [
+        {
+            "_id": "67605b442bcb1b17012c076c",
+            "name": "DependencyCheck",
+            "version": "1.0.0",
+            "config": {
+                "severity_levels": [
+                    "HIGH",
+                    "CRITICAL"
+                ],
+                "scan_timeout": 300,
+                "exclude_patterns": [
+                    ".env"
+                ],
+                "type": "Software Composition Analysis",
+                "target": "Full Repository",
+                "analytics": 90
+            },
+            "createdAt": "2024-12-16T16:54:28.603Z",
+            "updatedAt": "2024-12-18T17:10:34.938Z",
+            "__v": 0,
+            "imagePath": "/tools/DependencyCheck.png"
+        },
+        {
+            "_id": "675eac25f7d855682c6f3405",
+            "name": "Git-leak",
+            "version": "8.15.2",
+            "config": {
+                "severity_levels": [
+                    "HIGH"
+                ],
+                "scan_timeout": 300,
+                "exclude_patterns": [
+                    ".env",
+                    "*.log"
+                ],
+                "type": "Secret Scanning",
+                "target": "Git History",
+                "analytics": 85
+            },
+            "createdAt": "2024-12-15T10:15:01.111Z",
+            "updatedAt": "2024-12-18T17:10:45.205Z",
+            "__v": 0,
+            "imagePath": "/tools/Git-leak.jpg"
+        },
+        {
+            "_id": "67618f0172252f8a479794ac",
+            "name": "OWASPZAP",
+            "version": "1.0.0",
+            "config": {
+                "severity_levels": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low"
+                ],
+                "scan_timeout": 300,
+                "exclude_patterns": [
+                    "node_modules",
+                    "dist",
+                    "build"
+                ],
+                "type": "Dynamic Application Security Testing",
+                "target": "Web Server",
+                "analytics": 90
+            },
+            "createdAt": "2024-12-17T14:47:29.859Z",
+            "updatedAt": "2024-12-18T17:10:55.665Z",
+            "__v": 0,
+            "imagePath": "/tools/OWASPZAP.png"
+        },
+        {
+            "_id": "67618d6772252f8a4797949e",
+            "name": "Snyk",
+            "version": "1.0.0",
+            "config": {
+                "severity_levels": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low"
+                ],
+                "scan_timeout": 300,
+                "exclude_patterns": [
+                    "node_modules",
+                    "dist",
+                    "build"
+                ],
+                "type": "Software Composition Analysis",
+                "target": "Full repository",
+                "analytics": 90
+            },
+            "createdAt": "2024-12-17T14:40:39.376Z",
+            "updatedAt": "2024-12-18T17:11:02.024Z",
+            "__v": 0,
+            "imagePath": "/tools/Snyk.png"
+        },
+        {
+            "_id": "67618e6672252f8a479794a7",
+            "name": "Sonaqube",
+            "version": "1.0.0",
+            "config": {
+                "severity_levels": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low"
+                ],
+                "scan_timeout": 300,
+                "exclude_patterns": [
+                    "node_modules",
+                    "dist",
+                    "build"
+                ],
+                "type": "Static Application Security Testing",
+                "target": "Source Code ",
+                "analytics": 90
+            },
+            "createdAt": "2024-12-17T14:44:54.172Z",
+            "updatedAt": "2024-12-18T17:11:16.744Z",
+            "__v": 0,
+            "imagePath": "/tools/Sonaqube.png"
+        },
+        {
+            "_id": "67618e2b72252f8a479794a3",
+            "name": "Trivy",
+            "version": "1.0.0",
+            "config": {
+                "severity_levels": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low"
+                ],
+                "scan_timeout": 300,
+                "exclude_patterns": [
+                    "node_modules",
+                    "dist",
+                    "build"
+                ],
+                "type": "Container Security",
+                "target": "Docker Image",
+                "analytics": 90
+            },
+            "createdAt": "2024-12-17T14:43:55.443Z",
+            "updatedAt": "2024-12-18T17:11:27.024Z",
+            "__v": 0,
+            "imagePath": "/tools/Trivy.png"
+        }
+    ]
+}

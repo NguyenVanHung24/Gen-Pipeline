@@ -10,6 +10,10 @@ const ToolSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    imagePath: {
+        type: String,
+        default: ''
+    },
     config: {
         type: Object,
         default: {}

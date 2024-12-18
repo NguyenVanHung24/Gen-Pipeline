@@ -7,7 +7,8 @@ import {
     HiOutlineClock, 
     HiOutlineExclamation,
     HiOutlineAdjustments,
-    HiOutlineChartBar
+    HiOutlineChartBar,
+    HiOutlinePhotograph
 } from 'react-icons/hi';
 
 const ToolPage = () => {
@@ -15,6 +16,7 @@ const ToolPage = () => {
     const [formData, setFormData] = useState({
         name: '',
         version: '',
+        imagePath: '',
         config: {
             severity_levels: 'critical, high, medium, low',
             scan_timeout: 300,
@@ -25,6 +27,7 @@ const ToolPage = () => {
         }
     });
     const [editingId, setEditingId] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
 
     useEffect(() => {
         fetchTools();
@@ -42,27 +45,32 @@ const ToolPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const data = {
-                ...formData,
-                config: {
-                    ...formData.config,
-                    severity_levels: typeof formData.config.severity_levels === 'string' ? 
-                        formData.config.severity_levels.split(',').map(level => level.trim()) :
-                        formData.config.severity_levels,
-                    exclude_patterns: typeof formData.config.exclude_patterns === 'string' ?
-                        formData.config.exclude_patterns.split(',').map(pattern => pattern.trim()) :
-                        formData.config.exclude_patterns
-                }
-            };
+            const formDataToSend = new FormData();
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('version', formData.version);
+            formDataToSend.append('config', JSON.stringify(formData.config));
+            
+            if (selectedFile) {
+                formDataToSend.append('image', selectedFile);
+            }
 
             if (editingId) {
-                await axios.put(`http://localhost:3001/api/tools/${editingId}`, data);
+                await axios.put(`http://localhost:3001/api/tools/${editingId}`, formDataToSend, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
             } else {
-                await axios.post('http://localhost:3001/api/tools', data);
+                await axios.post('http://localhost:3001/api/tools', formDataToSend, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
             }
             
             fetchTools();
             resetForm();
+            setSelectedFile(null);
         } catch (error) {
             console.error('Error saving tool:', error);
         }
@@ -84,14 +92,19 @@ const ToolPage = () => {
         setFormData({
             name: tool.name,
             version: tool.version,
+            imagePath: tool.imagePath,
             config: {
                 ...tool.config,
                 severity_levels: Array.isArray(tool.config.severity_levels) ? 
                     tool.config.severity_levels.join(', ') : 
-                    tool.config.severity_levels,
+                    tool.config.severity_levels || '',
                 exclude_patterns: Array.isArray(tool.config.exclude_patterns) ?
                     tool.config.exclude_patterns.join(', ') :
-                    tool.config.exclude_patterns
+                    tool.config.exclude_patterns || '',
+                scan_timeout: tool.config.scan_timeout || 300,
+                type: tool.config.type || '',
+                target: tool.config.target || 'Full repository',
+                analytics: tool.config.analytics || 0
             }
         });
     };
@@ -101,6 +114,7 @@ const ToolPage = () => {
         setFormData({
             name: '',
             version: '',
+            imagePath: '',
             config: {
                 severity_levels: 'critical, high, medium, low',
                 scan_timeout: 300,
@@ -121,6 +135,10 @@ const ToolPage = () => {
         'Infrastructure as Code Scan',
         'Vulnerability Management'
     ];
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
 
     return (
         <Layout>
@@ -291,6 +309,33 @@ const ToolPage = () => {
                                 <p className="mt-2 text-sm text-gray-500">
                                     Score between 0 and 100
                                 </p>
+                            </div>
+
+                            {/* Tool Image */}
+                            <div className="sm:col-span-3">
+                                <div className="flex items-center">
+                                    <HiOutlinePhotograph className="h-5 w-5 text-gray-400 mr-2" />
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Tool Image
+                                    </label>
+                                </div>
+                                <div className="mt-1">
+                                    <input
+                                        type="file"
+                                        onChange={handleFileChange}
+                                        accept="image/*"
+                                        className="input-field"
+                                    />
+                                </div>
+                                {formData.imagePath && (
+                                    <div className="mt-2">
+                                        <img 
+                                            src={`http://localhost:3001${formData.imagePath}`} 
+                                            alt={formData.name}
+                                            className="h-20 w-20 object-contain"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
