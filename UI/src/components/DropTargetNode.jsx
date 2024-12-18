@@ -10,9 +10,19 @@ const DropTargetNode = ({ data }) => {
   useEffect(() => {
     const fetchTools = async () => {
       try {
-        const response = await fetch('http://3001/api/tools');
+        const response = await fetch('http://localhost:3001/api/tools');
         const data = await response.json();
-        setDroppedImages(data);
+        
+        const mappedTools = data.tools.map(tool => ({
+          sourceNodeId: tool._id,
+          imageSrc: tool.imagePath,
+          type: tool.config.type,
+          tool: tool.name,
+          analytics: tool.config.analytics,
+          target: tool.config.target
+        }));
+
+        setDroppedImages(mappedTools);
       } catch (error) {
         console.error('Error fetching tools:', error);
         setDroppedImages([]);
@@ -59,7 +69,10 @@ const DropTargetNode = ({ data }) => {
   const handleDragStart = (e, image) => {
     e.dataTransfer.setData('image', JSON.stringify({
       ...image,
-      tool: image.tool
+      tool: image.tool,
+      type: image.type,
+      analytics: image.analytics,
+      target: image.target
     }));
     e.dataTransfer.effectAllowed = 'move';
   };
