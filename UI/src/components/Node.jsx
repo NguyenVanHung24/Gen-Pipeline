@@ -105,7 +105,7 @@ const Node = ({ data: nodeData }) => {
         onDragLeave={(e) => e.currentTarget.classList.remove('can-drop')}
         onDrop={handleDrop}
       >
-        <div className="px-4 py-2 text-sm font-medium text-gray-700 text-center rounded-t-xl">
+        <div className="px-4 py-2 text-sm font-medium text-black text-center rounded-t-xl bg-gray-100">
           {nodeData.phase}
         </div>
 

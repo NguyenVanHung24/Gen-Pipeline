@@ -1,9 +1,17 @@
 import Flow from './components/Flow';
+import { useState } from 'react';
+import Toolbar from './components/Toolbar';
 
 const CampaignProfile = ({ steps })  => {
+  const [mode, setMode] = useState('profile');
+
   return (
     <div style={{ height: '100%', backgroundColor: '#efefef' }}>
-      <Flow mode="profile" steps={steps} />
+      <Toolbar
+        currentMode={mode}
+        changeMode={setMode}
+      />
+      <Flow mode={mode} steps={steps} />
     </div>
   );
 };

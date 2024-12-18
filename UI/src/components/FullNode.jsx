@@ -1,4 +1,4 @@
-import { Handle }  from 'react-flow-renderer';
+import { Handle } from 'react-flow-renderer';
 import {
   Typography,
   Box,
@@ -9,161 +9,162 @@ import {
   TableCell,
   Grid,
 } from '@material-ui/core';
-
 import ProgressIcon from './ProgressIcon';
 
 const getIcon = (node) => {
   switch (node.type) {
-    case 'email-1to1':
-      return '&#xf658;';
-    case 'automated-email':
-      return '&#xf674;';
-    case 'sms':
-      return '&#xf7cd;';
-    case 'survey':
-      return '&#xf681;';
-    case 'call':
-      return '&#xf0f0;';
-    case 'event':
-      return '&#xf073;';
-    default: break;
-  };
-}
+    case 'secret-scan':
+      return '🔒'; // Secret scanning icon
+    case 'sca':
+      return '📦'; // Software composition icon
+    case 'sast':
+      return '🔍'; // Static analysis icon
+    case 'dast':
+      return '🌐'; // Dynamic analysis icon
+    case 'container':
+      return '📦'; // Container icon
+    case 'iac-scan':
+      return '⚙️'; // Infrastructure icon
+    case 'vulnerability':
+      return '🛡️'; // Vulnerability icon
+    default: 
+      return '🔧'; // Default tool icon
+  }
+};
 
 const FullNode = ({ data: nodeData }) => {
   const stepIcon = getIcon(nodeData);
-  const notReachedValue = nodeData.data.potentialTarget - nodeData.data.target;
+  const notReachedValue = nodeData.data?.potentialTarget - nodeData.data?.target || 0;
   const formatDecimal = (value) => +parseFloat(value).toFixed(2);
+
+  // Add console.log to debug the incoming data
+  console.log('FullNode Data:', nodeData);
+
   return (
-    <>
-      <div className="node-container" style={{ transform: 'translateX(200px)' }}>
-        <div className={`node-status node-status-${nodeData.phase.toLowerCase()}`}>
-          { nodeData.phase }
-        </div>
-        { nodeData.previous.length > 0 && (
-          <Handle
-            type="target"
-            position="left"
-            style={{
-              border: '1px solid rgb(152,152,152)',
-              backgroundColor: 'white',
-            }}
-          />
-        )}
-        <div style={{
-            width: '100%',
-            marginTop: 7,
-            display: "flex",
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Box flexGrow={1}>
-            <ProgressIcon
-              values={nodeData.data.analytics}
-              total={nodeData.data.potentialTarget}
-              icon={stepIcon}
-            />
-          </Box>
-          <div style={{ marginLeft: 10, marginRight: 10, flexGrow: 3 }}>
-            <Typography style={{ fontSize: '12px', color: "#666666" }}>
+    <div className="node-container bg-white rounded-xl shadow-lg p-4" style={{ minWidth: '280px', minHeight: '390px' }}>
+      <div className={`node-status node-status-${nodeData.phase?.toLowerCase()} px-4 py-2 text-white font-medium rounded-t-xl`}>
+        {nodeData.phase}
+      </div>
+
+      {nodeData.previous?.length > 0 && (
+        <Handle
+          type="target"
+          position="left"
+          className="!w-3 !h-3 !border-2 !border-gray-300 !bg-white"
+        />
+      )}
+
+      <div className="mt-4 space-y-4">
+        {/* Tool Info Section */}
+        <div className="flex items-center space-x-3">
+          <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+            <span className="text-xl">{stepIcon}</span>
+          </div>
+          <div>
+            <Typography variant="subtitle1" className="font-medium">
               {nodeData.name}
             </Typography>
-            { !!nodeData.contentName && (
-              <Typography style={{ fontSize: '12px' }} title={nodeData.contentName}>
-                { nodeData.contentName.length > 45 ?  nodeData.contentName.substring(0,45) + '...' : nodeData.contentName }
+            {nodeData.contentName && (
+              <Typography variant="body2" className="text-gray-600" title={nodeData.contentName}>
+                {nodeData.contentName.length > 45 ? nodeData.contentName.substring(0, 45) + '...' : nodeData.contentName}
               </Typography>
             )}
-            <Box mt={1} mb={1}>
-              <Typography style={{ fontSize: '12px', color: "#666666" }}>
-                Date
-              </Typography>
-              { typeof(nodeData.date) === 'object' && (
-                <Box>
-                  <Typography style={{ fontSize: '12px' }}>
-                    From { nodeData.date.from } to { nodeData.date.to}
-                  </Typography>
-                </Box>
-              )}
-              { typeof(nodeData.date) === 'string' && (
-                <Box>
-                  <Typography style={{ fontSize: '12px' }}>
-                    { nodeData.date }
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-            <Grid container>
-              <Grid item xs={4} style={{ textAlign: "left"}}>
-                <Typography style={{ fontSize: '12px', color: "#666666" }}>
-                  Potential
-                </Typography>
-                <Typography style={{ fontSize: '13px' }}>
-                  { nodeData.data.potentialTarget }
-                </Typography>
-              </Grid>
-              <Grid item xs={4} style={{ textAlign: "center"}}>
-                <Typography style={{ fontSize: '12px', color: "#666666" }}>
-                  Target
-                </Typography>
-                <Typography style={{ fontSize: '13px' }}>
-                  { nodeData.data.target }
-                </Typography>
-              </Grid>
-              <Grid item xs={4} style={{ textAlign: "right"}}>
-                <Typography style={{ fontSize: '12px', color: "#666666" }}>
-                  { nodeData.data.percentOK.label }
-                </Typography>
-                <Typography style={{ fontSize: '13px' }}>
-                  { nodeData.data.percentOK.value } %
-                </Typography>
-              </Grid>
-            </Grid>
           </div>
         </div>
-        <Box style={{ width: '98%', padding: 3}}>
-          <TableContainer style={{ width: '100%', marginTop: 10 }}>
-            <Table size="small">
-              <TableBody >
-                {  nodeData.data.analytics.map(({ value, label, color }, index) => (
-                  <TableRow key={index}>
-                    <TableCell style={{ padding: 0}}>
-                      <div style={{
-                        border: `5px solid ${color}`,
-                        borderRadius: 5
-                      }}/>
-                    </TableCell>
-                    <TableCell style={{ fontSize: '10px'}}>{label}</TableCell>
-                    <TableCell style={{ fontSize: '10px', textAlign: 'right'}}>{value}</TableCell>
-                    <TableCell style={{ fontSize: '10px', textAlign: 'right'}}>{formatDecimal(value / nodeData.data.potentialTarget * 100)} %</TableCell>
-                  </TableRow>
-                ))}
-                <TableRow>
-                  <TableCell style={{ padding: 0}}>
-                    <div style={{
-                      border: `5px solid #cccccc`,
-                      borderRadius: 5
-                    }}/>
-                  </TableCell>
-                  <TableCell style={{ fontSize: '10px'}}>Not Reached</TableCell>
-                  <TableCell style={{ fontSize: '10px', textAlign: 'right'}}>{ notReachedValue }</TableCell>
-                  <TableCell style={{ fontSize: '10px', textAlign: 'right'}}>{formatDecimal(notReachedValue / nodeData.data.potentialTarget * 100)} %</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+
+        {/* Date Section */}
+        <Box className="bg-gray-50 rounded-lg p-3">
+          <Typography variant="subtitle2" className="text-gray-600 mb-1">
+            Date
+          </Typography>
+          {typeof(nodeData.date) === 'object' ? (
+            <Typography variant="body2">
+              From {nodeData.date.from} to {nodeData.date.to}
+            </Typography>
+          ) : (
+            <Typography variant="body2">
+              {nodeData.date}
+            </Typography>
+          )}
         </Box>
-        { nodeData.final !== true && (
-          <Handle
-            type="source"
-            position="right"
-            style={{ 
-              border: '1px solid rgb(152,152,152)',
-              backgroundColor: 'white',
-            }}
-          />
-        )}
+
+        {/* Metrics Grid */}
+        <Grid container spacing={2} className="bg-gray-50 rounded-lg p-2">
+          <Grid item xs={4}>
+            <Typography variant="caption" className="text-gray-600">
+              Potential
+            </Typography>
+            <Typography variant="body2" className="font-medium">
+              {nodeData.data?.potentialTarget || 0}
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="caption" className="text-gray-600">
+              Target
+            </Typography>
+            <Typography variant="body2" className="font-medium">
+              {nodeData.data?.target || 0}
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="caption" className="text-gray-600">
+              {nodeData.data?.percentOK?.label || 'Progress'}
+            </Typography>
+            <Typography variant="body2" className="font-medium">
+              {nodeData.data?.percentOK?.value || 0}%
+            </Typography>
+          </Grid>
+        </Grid>
+
+        {/* Analytics Table */}
+        <TableContainer className="bg-gray-50 rounded-lg">
+          <Table size="small">
+            <TableBody>
+              {nodeData.data?.analytics?.map(({ value, label, color }, index) => (
+                <TableRow key={index}>
+                  <TableCell style={{ width: '20px', padding: '8px' }}>
+                    <div style={{
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: color,
+                      borderRadius: '50%'
+                    }} />
+                  </TableCell>
+                  <TableCell>{label}</TableCell>
+                  <TableCell align="right">{value}</TableCell>
+                  <TableCell align="right">
+                    {formatDecimal(value / (nodeData.data?.potentialTarget || 1) * 100)}%
+                  </TableCell>
+                </TableRow>
+              ))}
+              <TableRow>
+                <TableCell style={{ width: '20px', padding: '8px' }}>
+                  <div style={{
+                    width: '10px',
+                    height: '10px',
+                    backgroundColor: '#cccccc',
+                    borderRadius: '50%'
+                  }} />
+                </TableCell>
+                <TableCell>Not Reached</TableCell>
+                <TableCell align="right">{notReachedValue}</TableCell>
+                <TableCell align="right">
+                  {formatDecimal(notReachedValue / (nodeData.data?.potentialTarget || 1) * 100)}%
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
-    </>
+
+      {nodeData.final !== true && (
+        <Handle
+          type="source"
+          position="right"
+          className="!w-3 !h-3 !border-2 !border-gray-300 !bg-white"
+        />
+      )}
+    </div>
   );
 };
 
