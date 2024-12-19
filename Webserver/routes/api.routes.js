@@ -6,7 +6,7 @@ const toolController = require('../controllers/tool.controller');
 
 // Pipeline routes
 router.post('/pipelines', pipelineController.createPipeline);
-router.get('/pipelines', pipelineController.getAllPipelines);
+router.get('/pipelines', pipelineController.getAllPipelines); 
 router.get('/pipelines/search', pipelineController.searchPipelines);
 router.get('/pipelines/:id', pipelineController.getPipelineById);
 router.put('/pipelines/:id', pipelineController.updatePipeline);
@@ -23,7 +23,7 @@ router.delete('/platforms/:id', platformController.deletePlatform);
 
 // Tool routes
 router.post('/tools', toolController.createTool);
-router.get('/tools', toolController.getAllTools);
+router.get('/tools', toolController.getTools); // Changed from getAllTools to getTools based on tool.controller.js
 router.get('/tools/search', toolController.searchTools);
 router.get('/tools/:id', toolController.getToolById);
 router.put('/tools/:id', toolController.updateTool);
