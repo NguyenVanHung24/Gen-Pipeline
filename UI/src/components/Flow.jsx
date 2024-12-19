@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import ReactFlow from 'react-flow-renderer';
+import axios from 'axios';
 
 import Node from './Node';
 import FullNode from './FullNode';
@@ -14,6 +15,8 @@ const Flow = ({ mode, steps }) => {
   const [pipelineYaml, setPipelineYaml] = useState('');
   const [showDataModal, setShowDataModal] = useState(false);
   const [currentData, setCurrentData] = useState(null);
+  const [combinedYaml, setCombinedYaml] = useState('');
+  const [activeTab, setActiveTab] = useState('nodes');
 
   const handleNodeImageUpdate = useCallback((nodeId, imageData) => {
     // This function updates the image data for a specific node
@@ -109,11 +112,67 @@ const Flow = ({ mode, steps }) => {
     }
   };
 
-  // Function to handle getting all node data
-  const handleGetNodesData = () => {
+  // Hàm để search pipeline cho một node
+  const searchPipelineForNode = async (nodeData) => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/pipelines/search', {
+        params: {
+          tool: nodeData.currentTool,
+          platform: 'gitlab',
+          stage: nodeData.phase,
+          language: 'javascript'
+        }
+      });
+
+      if (response.data.pipelines && response.data.pipelines.length > 0) {
+        // Lấy YAML content của pipeline đầu tiên tìm được
+        return response.data.pipelines[0].yaml_content;
+      }
+      return null;
+    } catch (error) {
+      console.error(`Error searching pipeline for ${nodeData.currentTool}:`, error);
+      return null;
+    }
+  };
+
+  // Sửa lại hàm handleGetNodesData
+  const handleGetNodesData = async () => {
     const nodesData = getAllNodesData();
     setCurrentData(nodesData);
-    setShowDataModal(true);
+
+    // Tạo mảng các promise để search pipeline cho mỗi node
+    const pipelinePromises = Object.values(nodesData).map(async (nodeData) => {
+      const yaml = await searchPipelineForNode(nodeData);
+      return {
+        tool: nodeData.currentTool,
+        yaml: yaml
+      };
+    });
+
+    try {
+      // Đợi tất cả các promise hoàn thành
+      const results = await Promise.all(pipelinePromises);
+
+      // Lọc bỏ các kết quả null và combine YAML
+      const validYamls = results.filter(result => result.yaml !== null);
+      
+      // Combine tất cả YAML thành một
+      const combined = validYamls.map(result => {
+        return `# Pipeline for ${result.tool}\n${result.yaml}\n---\n`;
+      }).join('\n');
+
+      setCombinedYaml(combined);
+
+      // Hiển thị modal với combined YAML
+      setCurrentData({
+        nodesData: nodesData,
+        combinedYaml: combined
+      });
+      setShowDataModal(true);
+
+    } catch (error) {
+      console.error('Error processing pipelines:', error);
+    }
   };
 
   return (
@@ -219,31 +278,65 @@ const Flow = ({ mode, steps }) => {
                 top: '10px',
                 right: '10px',
                 cursor: 'pointer',
-                fontSize: '24px',
-                width: '30px',
-                height: '30px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '50%',
-                backgroundColor: '#f8f9fa',
-                transition: 'background-color 0.2s'
+                fontSize: '24px'
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e6ea'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
             >
               ×
             </div>
 
-            <h3>Current Nodes Data</h3>
-            <pre style={{ 
+            <h3>Pipeline Configuration</h3>
+            
+            {/* Tab buttons */}
+            <div style={{ marginBottom: '20px' }}>
+              <button
+                onClick={() => setActiveTab('nodes')}
+                style={{
+                  padding: '8px 16px',
+                  marginRight: '10px',
+                  backgroundColor: activeTab === 'nodes' ? '#2E86C1' : '#f8f9fa',
+                  color: activeTab === 'nodes' ? 'white' : 'black',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Nodes Data
+              </button>
+              <button
+                onClick={() => setActiveTab('yaml')}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: activeTab === 'yaml' ? '#2E86C1' : '#f8f9fa',
+                  color: activeTab === 'yaml' ? 'white' : 'black',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Combined YAML
+              </button>
+            </div>
+
+            {/* Content based on active tab */}
+            <div style={{ 
               backgroundColor: '#f5f5f5', 
               padding: '10px',
               borderRadius: '4px',
-              overflow: 'auto'
+              overflow: 'auto',
+              maxHeight: '500px'
             }}>
-              {JSON.stringify(currentData, null, 2)}
-            </pre>
+              {activeTab === 'nodes' ? (
+                <pre>
+                  {JSON.stringify(currentData?.nodesData, null, 2)}
+                </pre>
+              ) : (
+                <pre>
+                  {currentData?.combinedYaml || 'No YAML content available'}
+                </pre>
+              )}
+            </div>
+
+            {/* Action buttons */}
             <div style={{ 
               display: 'flex', 
               gap: '10px', 
@@ -252,7 +345,10 @@ const Flow = ({ mode, steps }) => {
             }}>
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(JSON.stringify(currentData, null, 2));
+                  const content = activeTab === 'nodes' 
+                    ? JSON.stringify(currentData?.nodesData, null, 2)
+                    : currentData?.combinedYaml;
+                  navigator.clipboard.writeText(content);
                   alert('Copied to clipboard!');
                 }}
                 style={{

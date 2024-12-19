@@ -206,14 +206,26 @@ const PipelinePage = () => {
                                     </label>
                                 </div>
                                 <div className="mt-1">
-                                    <input
-                                        type="text"
+                                    <select
                                         value={formData.language}
                                         onChange={(e) => setFormData({...formData, language: e.target.value})}
                                         required
-                                        className="input-field"
-                                        placeholder="javascript"
-                                    />
+                                        className="select-field"
+                                    >
+                                        <option value="">Select Language</option>
+                                        <option value="Python">Python</option>
+                                        <option value="Java">Java</option>
+                                        <option value="JavaScript">JavaScript</option>
+                                        <option value="TypeScript">TypeScript</option>
+                                        <option value="Go">Go</option>
+                                        <option value="Ruby">Ruby</option>
+                                        <option value="PHP">PHP</option>
+                                        <option value="C#">C#</option>
+                                        <option value="C/C++">C/C++</option>
+                                        <option value="Rust">Rust</option>
+                                        <option value="Swift">Swift</option>
+                                        <option value="Kotlin">Kotlin</option>
+                                    </select>
                                 </div>
                             </div>
 
