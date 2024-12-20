@@ -9,7 +9,7 @@ import { generateFlow } from '../utils';
 import DropTargetNode from './DropTargetNode';
 import PipelineService from '../services/api';
 
-const Flow = ({ mode, steps }) => {
+const Flow = ({ mode, steps, platform, language }) => {
   const [stepDetails, setStepDetails] = useState(null);
   const [nodesImageData, setNodesImageData] = useState({});
   const [pipelineYaml, setPipelineYaml] = useState('');
@@ -118,9 +118,9 @@ const Flow = ({ mode, steps }) => {
       const response = await axios.get('http://localhost:3001/api/pipelines/search', {
         params: {
           tool: nodeData.currentTool,
-          platform: 'gitlab',
+          platform: platform,
           stage: nodeData.phase,
-          language: 'javascript'
+          language: language
         }
       });
 
