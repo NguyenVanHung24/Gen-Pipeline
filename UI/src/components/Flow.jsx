@@ -179,7 +179,7 @@ const Flow = ({ mode, steps, platform, language }) => {
     <>
       <div style={{
         height: '100%',
-        backgroundColor: '#efefef',
+        backgroundColor: '#f8f9fa',
         position: 'relative',
         display: 'flex'
       }}>
@@ -227,8 +227,31 @@ const Flow = ({ mode, steps, platform, language }) => {
             </button>
           </div>
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={{ 
+          flex: 1,
+          position: 'relative'
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+              radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+              radial-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+              #f8f9fa`,
+            backgroundSize: '20px 20px',
+            backgroundPosition: '0 0, 10px 10px',
+            zIndex: 0
+          }} />
+          
           <ReactFlow
+            style={{
+              backgroundColor: 'transparent',
+              position: 'relative',
+              zIndex: 1
+            }}
             onElementClick={(evt, node) => {
               if(node.type !== 'smoothstep' && mode === 'profile')
                 setStepDetails({ evt: evt.currentTarget, node });
