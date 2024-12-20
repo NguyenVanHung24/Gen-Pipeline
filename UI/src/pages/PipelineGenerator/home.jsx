@@ -20,6 +20,7 @@ const IndexPage = () => {
             try {
                 const response = await axios.get('http://localhost:3001/api/platforms');
                 setPlatforms(response.data.platforms);
+                console.log(response.data.platforms);
             } catch (error) {
                 console.error('Error fetching platforms:', error);
             }
@@ -150,7 +151,7 @@ const IndexPage = () => {
                                         // Navigate with state to pass data to PipelineGenerator component
                                         navigate('/generate', {
                                             state: {
-                                                platform: selectedConfig.platform,
+                                                platform: selectedConfig.platform.name,
                                                 language: selectedConfig.language
                                             }
                                         });
