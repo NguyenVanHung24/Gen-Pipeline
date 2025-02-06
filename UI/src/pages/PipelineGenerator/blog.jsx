@@ -11,7 +11,7 @@ import {
     HiOutlinePhotograph
 } from 'react-icons/hi';
 
-const ToolPage = () => {
+const Blog = () => {
     const [tools, setTools] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
@@ -450,4 +450,4 @@ const ToolPage = () => {
     );
 };
 
-export default ToolPage;
+export default Blog;

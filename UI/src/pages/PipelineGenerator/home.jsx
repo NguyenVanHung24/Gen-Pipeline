@@ -13,12 +13,14 @@ const IndexPage = () => {
         platform: '',
         language: ''
     });
+    const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 
     // Fetch platforms when component mounts
     useEffect(() => {
         const fetchPlatforms = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/platforms');
+                console.log(API_BASE_URL)
+                const response = await axios.get(`${API_BASE_URL}/platforms`);
                 setPlatforms(response.data.platforms);
                 console.log(response.data.platforms);
             } catch (error) {

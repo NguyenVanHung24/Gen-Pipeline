@@ -1,8 +1,0 @@
-curl -X POST http://localhost:3001/api/generate-yaml \
--H "Content-Type: application/json" \
--d '{
-    "name": "my-pipeline",
-    "tools": ["actual-tool-id-1", "actual-tool-id-2"],
-    "platform": "actual-platform-id",
-    "language": "javascript"
-}'

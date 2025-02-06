@@ -17,6 +17,7 @@ const Flow = ({ mode, steps, platform, language }) => {
   const [currentData, setCurrentData] = useState(null);
   const [combinedYaml, setCombinedYaml] = useState('');
   const [activeTab, setActiveTab] = useState('nodes');
+  const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 
   const handleNodeImageUpdate = useCallback((nodeId, imageData) => {
     // This function updates the image data for a specific node
@@ -115,7 +116,7 @@ const Flow = ({ mode, steps, platform, language }) => {
   // Hàm để search pipeline cho một node
   const searchPipelineForNode = async (nodeData) => {
     try {
-      const response = await axios.get('http://localhost:3001/api/pipelines/search', {
+      const response = await axios.get(`${API_BASE_URL}/pipelines/search`, {
         params: {
           tool: nodeData.currentTool,
           platform: platform,

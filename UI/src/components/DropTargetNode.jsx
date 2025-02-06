@@ -6,11 +6,12 @@ const DropTargetNode = ({ data }) => {
   const [droppedImages, setDroppedImages] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  
+  const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+
   useEffect(() => {
     const fetchTools = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/tools');
+        const response = await fetch(`${API_BASE_URL}/tools`);
         const data = await response.json();
         
         const mappedTools = data.tools.map(tool => ({

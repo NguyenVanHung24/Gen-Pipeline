@@ -9,6 +9,7 @@ import PipelinePage from './pages/PipelineGenerator/pipeline';
 import Navigation from './components/Navigation';
 import steps from './campaign';
 import Homepage from './pages/PipelineGenerator/home';
+import Blog from './pages/PipelineGenerator/blog';
 const AppRoutes = () => {
     return (
         <Router>
@@ -24,6 +25,7 @@ const AppRoutes = () => {
                 <Route path="/platforms" element={<PlatformPage />} />
                 <Route path="/tools" element={<ToolPage />} />
                 <Route path="/pipelines" element={<PipelinePage />} />
+                <Route path="/setup/tools/:id" element={<Blog/>} />
             </Routes>
         </Router>
     );

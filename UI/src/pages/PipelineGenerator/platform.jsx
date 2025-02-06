@@ -15,6 +15,7 @@ const PlatformPage = () => {
         }
     });
     const [editingId, setEditingId] = useState(null);
+    const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 
     useEffect(() => {
         fetchPlatforms();
@@ -22,7 +23,7 @@ const PlatformPage = () => {
 
     const fetchPlatforms = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/platforms');
+            const response = await axios.get(`${API_BASE_URL}/platforms`);
             setPlatforms(response.data.platforms);
         } catch (error) {
             console.error('Error fetching platforms:', error);
@@ -38,9 +39,9 @@ const PlatformPage = () => {
             };
 
             if (editingId) {
-                await axios.put(`http://localhost:3001/api/platforms/${editingId}`, data);
+                await axios.put(`${API_BASE_URL}/platforms/${editingId}`, data);
             } else {
-                await axios.post('http://localhost:3001/api/platforms', data);
+                await axios.post(`${API_BASE_URL}/platforms`, data);
             }
             
             fetchPlatforms();
@@ -53,7 +54,7 @@ const PlatformPage = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this platform?')) {
             try {
-                await axios.delete(`http://localhost:3001/api/platforms/${id}`);
+                await axios.delete(`${API_BASE_URL}/platforms/${id}`);
                 fetchPlatforms();
             } catch (error) {
                 console.error('Error deleting platform:', error);

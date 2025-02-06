@@ -32,9 +32,11 @@ const PipelinePage = () => {
         fetchTools();
     }, []);
 
+    const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+
     const fetchPipelines = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/pipelines');
+            const response = await axios.get(`${API_BASE_URL}/pipelines`);
             setPipelines(response.data.pipelines);
         } catch (error) {
             console.error('Error fetching pipelines:', error);
@@ -43,7 +45,7 @@ const PipelinePage = () => {
 
     const fetchPlatforms = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/platforms');
+            const response = await axios.get(`${API_BASE_URL}/platforms`);
             setPlatforms(response.data.platforms);
         } catch (error) {
             console.error('Error fetching platforms:', error);
@@ -52,7 +54,7 @@ const PipelinePage = () => {
 
     const fetchTools = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/tools');
+            const response = await axios.get(`${API_BASE_URL}/tools`);
             setTools(response.data.tools);
         } catch (error) {
             console.error('Error fetching tools:', error);
@@ -63,9 +65,9 @@ const PipelinePage = () => {
         e.preventDefault();
         try {
             if (editingId) {
-                await axios.put(`http://localhost:3001/api/pipelines/${editingId}`, formData);
+                await axios.put(`${API_BASE_URL}/pipelines/${editingId}`, formData);
             } else {
-                await axios.post('http://localhost:3001/api/pipelines', formData);
+                await axios.post(`${API_BASE_URL}/pipelines`, formData);
             }
             
             fetchPipelines();
@@ -78,7 +80,7 @@ const PipelinePage = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this pipeline?')) {
             try {
-                await axios.delete(`http://localhost:3001/api/pipelines/${id}`);
+                await axios.delete(`${API_BASE_URL}/${id}`);
                 fetchPipelines();
             } catch (error) {
                 console.error('Error deleting pipeline:', error);
