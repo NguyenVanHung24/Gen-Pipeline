@@ -9,7 +9,11 @@ import PipelinePage from './pages/PipelineGenerator/pipeline';
 import Navigation from './components/Navigation';
 import steps from './campaign';
 import Homepage from './pages/PipelineGenerator/home';
-import Blog from './pages/PipelineGenerator/blog';
+import MainLayout from './pages/Blog/MainLayout';
+import HomePageBlog from './pages/Blog/HomePageBlog';
+import SinglePostPage from './pages/Blog/SinglePostPage';
+import PostListPage from './pages/Blog/PostListPage';
+import Write from './pages/Blog/Write';
 const AppRoutes = () => {
     return (
         <Router>
@@ -25,7 +29,18 @@ const AppRoutes = () => {
                 <Route path="/platforms" element={<PlatformPage />} />
                 <Route path="/tools" element={<ToolPage />} />
                 <Route path="/pipelines" element={<PipelinePage />} />
-                <Route path="/setup/tools/:id" element={<Blog/>} />
+                <Route path="/blog" element={<MainLayout />}>
+                    {/* Trang chủ blog */}
+                    <Route index element={<HomePageBlog />} />
+                    
+                    {/* Route cho bài viết cụ thể */}
+                    <Route path="/post" element={<PostListPage />} />
+                    {/* Route cho bài viết cụ thể */}
+                    <Route path="/:slug" element={<SinglePostPage />} />
+                    
+                    {/* Route tạo bài viết mới */}
+                    <Route path="/write" element={<Write />} />
+                </Route>
             </Routes>
         </Router>
     );
