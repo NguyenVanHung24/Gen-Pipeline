@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 // import MainCategories from "../components/MainCategories";
 // import FeaturedPosts from "../components/FeaturedPosts";
 // import PostList from "../components/PostList";
-
+import Image from "../../components/Blog/Image";
 const HomePageBlog = () => {
   return (
     // <div className="mt-4 flex flex-col gap-4">
@@ -73,7 +73,9 @@ const HomePageBlog = () => {
     //     {/* <PostList/> */}
     //   </div>
     // </div>
-    <div>Index Page</div>
+    <div>Index Page
+      <Image src="logo.png" alt="Lama Logo" w={32} h={32} />
+    </div>
   );
 };
 

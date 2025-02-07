@@ -6,7 +6,7 @@
 import axios from "axios";
 
 // const fetchPost = async (slug) => {
-//   const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts/${slug}`);
+//   const res = await axios.get(`${import.meta.env.REACT_APP_API_URL}/posts/${slug}`);
 //   return res.data;
 // };
 
