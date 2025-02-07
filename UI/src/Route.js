@@ -33,13 +33,13 @@ const AppRoutes = () => {
                     {/* Trang chủ blog */}
                     <Route index element={<HomePageBlog />} />
                     
+                    {/* Route cho danh sách bài viết */}
+                    <Route path="post" element={<PostListPage />} />
                     {/* Route cho bài viết cụ thể */}
-                    <Route path="/post" element={<PostListPage />} />
-                    {/* Route cho bài viết cụ thể */}
-                    <Route path="/:slug" element={<SinglePostPage />} />
+                    <Route path=":slug" element={<SinglePostPage />} />
                     
                     {/* Route tạo bài viết mới */}
-                    <Route path="/write" element={<Write />} />
+                    <Route path="write" element={<Write />} />
                 </Route>
             </Routes>
         </Router>
