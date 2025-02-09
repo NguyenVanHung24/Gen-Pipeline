@@ -32,6 +32,7 @@ const Upload = ({ children, type, setProgress, setData }) => {
   };
   const onSuccess = (res) => {
     console.log(res);
+    toast.success("Image uploaded successfully!");
     setData(res);
   };
   const onUploadProgress = (progress) => {
@@ -41,8 +42,8 @@ const Upload = ({ children, type, setProgress, setData }) => {
 
   return (
     <IKContext
-      publicKey={process.env.REACT_IK_PUBLIC_KEY}
-      urlEndpoint={process.env.REACT_IK_URL_ENDPOINT}
+      publicKey={process.env.REACT_APP_IK_PUBLIC_KEY}
+      urlEndpoint={process.env.REACT_APP_IK_URL_ENDPOINT}
       authenticator={authenticator}
     >
       <IKUpload

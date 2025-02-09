@@ -58,77 +58,128 @@ const Write = () => {
     }
   };
 
-  // if (!isLoaded) {
-  //   return <div className="">Loading...</div>;
-  // }
-
-  // if (isLoaded && !isSignedIn) {
-  //   return <div className="">You should login!</div>;
-  // }
-
   return (
-    <div className="h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] flex flex-col gap-6">
-      <h1 className="text-cl font-light">Create a New Post</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1 mb-6">
-        <Upload type="image" setProgress={setProgress} setData={setCover}>
-          <button className="w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">
-            Add a cover image
-          </button>
-        </Upload>
-        <input
-          className="text-4xl font-semibold bg-transparent outline-none"
-          type="text"
-          placeholder="My Awesome Story"
-          name="title"
-        />
-        <div className="flex items-center gap-4">
-          <label htmlFor="" className="text-sm">
-            Choose a category:
-          </label>
-          <select
-            name="category"
-            id=""
-            className="p-2 rounded-xl bg-white shadow-md"
-          >
-            <option value="general">General</option>
-            <option value="web-design">Web Design</option>
-            <option value="development">Development</option>
-            <option value="databases">Databases</option>
-            <option value="seo">Search Engines</option>
-            <option value="marketing">Marketing</option>
-          </select>
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="md:flex md:items-center md:justify-between mb-8">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            Create a New Post
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Share your thoughts and experiences with the community
+          </p>
         </div>
-        <textarea
-          className="p-4 rounded-xl bg-white shadow-md"
-          name="desc"
-          placeholder="A Short Description"
-        />
-        <div className="flex flex-1 ">
-          <div className="flex flex-col gap-2 mr-2">
-            <Upload type="image" setProgress={setProgress} setData={setImg}>
-              🌆
-            </Upload>
-            <Upload type="video" setProgress={setProgress} setData={setVideo}>
-              ▶️
-            </Upload>
+      </div>
+
+      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 mb-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div className="sm:col-span-6">
+              <label className="block text-sm font-medium text-gray-700">
+                Title
+              </label>
+              <div className="mt-1">
+                <input
+                  type="text"
+                  name="title"
+                  className="input-field"
+                  placeholder="My Awesome Story"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label className="block text-sm font-medium text-gray-700">
+                Category
+              </label>
+              <div className="mt-1">
+                <select
+                  name="category"
+                  className="select-field"
+                >
+                  <option value="general">General</option>
+                  <option value="web-design">Web Design</option>
+                  <option value="development">Development</option>
+                  <option value="databases">Databases</option>
+                  <option value="seo">Search Engines</option>
+                  <option value="marketing">Marketing</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="sm:col-span-6">
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <div className="mt-1">
+                <textarea
+                  name="desc"
+                  className="input-field"
+                  placeholder="A Short Description"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-6">
+              <label className="block text-sm font-medium text-gray-700">
+                Cover Image
+              </label>
+              <div className="mt-1">
+                <Upload type="image" setProgress={setProgress} setData={setCover}>
+                  <button className="btn-secondary">
+                    Add a cover image
+                  </button>
+                </Upload>
+              </div>
+            </div>
+
+            <div className="sm:col-span-6">
+              <label className="block text-sm font-medium text-gray-700">
+                Content
+              </label>
+              <div className="mt-1">
+                <ReactQuill
+                  theme="snow"
+                  value={value}
+                  onChange={setValue}
+                  readOnly={0 < progress && progress < 100}
+                  className="input-field"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-6">
+              <label className="block text-sm font-medium text-gray-700">
+                Media
+              </label>
+              <div className="mt-1 flex space-x-4">
+                <Upload type="image" setProgress={setProgress} setData={setImg}>
+                  <button className="btn-secondary">
+                    Add Image
+                  </button>
+                </Upload>
+                <Upload type="video" setProgress={setProgress} setData={setVideo}>
+                  <button className="btn-secondary">
+                    Add Video
+                  </button>
+                </Upload>
+              </div>
+            </div>
           </div>
-          <ReactQuill
-            theme="snow"
-            className="flex-1 rounded-xl bg-white shadow-md"
-            value={value}
-            onChange={setValue}
-            readOnly={0 < progress && progress < 100}
-          />
-        </div>
-        <button
-          disabled={isLoading || (0 < progress && progress < 100)}
-          className="bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed"
-        >
-          {isLoading ? "Loading..." : "Send"}
-        </button>
-        {"Progress:" + progress}
-        {error && <span>{error}</span>}
-      </form>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={isLoading || (0 < progress && progress < 100)}
+              className="btn-primary"
+            >
+              {isLoading ? "Loading..." : "Send"}
+            </button>
+          </div>
+          {error && <span className="text-red-500">{error}</span>}
+          <div>Progress: {progress}%</div>
+        </form>
+      </div>
     </div>
   );
 };

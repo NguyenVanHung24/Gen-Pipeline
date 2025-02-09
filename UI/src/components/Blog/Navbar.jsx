@@ -6,62 +6,50 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-full h-16 md:h-20 flex items-center justify-between">
-      {/* LOGO */}
-      <Link to="/blog" className="flex items-center gap-4 text-2xl font-bold">
-        <Image src="logo.png" alt="Lama Logo" w={32} h={32} />
-        <span>lamalog</span>
-      </Link>
-      {/* MOBILE MENU */}
-      <div className="md:hidden">
-        {/* MOBILE BUTTON */}
-        <div
-          className="cursor-pointer text-4xl"
-          onClick={() => setOpen((prev) => !prev)}
-        >
-          <div className="flex flex-col gap-[5.4px]">
-            <div
-              className={`h-[3px] rounded-md w-6 bg-black origin-left transition-all ease-in-out ${
-                open && "rotate-45"
-              }`}
-            ></div>
-            <div
-              className={`h-[3px] rounded-md w-6 bg-black transition-all ease-in-out ${
-                open && "opacity-0"
-              }`}
-            ></div>
-            <div
-              className={`h-[3px] rounded-md w-6 bg-black origin-left transition-all ease-in-out ${
-                open && "-rotate-45"
-              }`}
-            ></div>
+    <div className="bg-white shadow-md rounded-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex">
+            {/* LOGO */}
+            <Link to="/blog" className="flex items-center gap-4 text-2xl font-bold">
+              <Image src="logo.png" alt="Lama Logo" w={32} h={32} />
+              <span>lamalog</span>
+            </Link>
+          </div>
+          <div className="hidden md:flex items-center space-x-4">
+            <Link to="/" className="text-gray-700 hover:text-gray-900">Home Page</Link>
+            <Link to="/blog" className="text-gray-700 hover:text-gray-900">Home Blog</Link>
+            <Link to="/blog/posts?sort=trending" className="text-gray-700 hover:text-gray-900">Trending</Link>
+            <Link to="/blog/posts?sort=popular" className="text-gray-700 hover:text-gray-900">Most Popular</Link>
+            {/* <Link to="/blog/" className="text-gray-700 hover:text-gray-900">About</Link> */}
+          </div>
+          <div className="md:hidden flex items-center">
+            <button
+              className="text-gray-700 hover:text-gray-900 focus:outline-none"
+              onClick={() => setOpen(!open)}
+            >
+              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {open ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+                )}
+              </svg>
+            </button>
           </div>
         </div>
-        {/* MOBILE LINK LIST */}
-        <div
-          className={`w-full h-screen bg-[#e6e6ff] flex flex-col items-center justify-center gap-8 font-medium text-lg absolute top-16 transition-all ease-in-out ${
-            open ? "-right-0" : "-right-[100%]"
-          }`}
-        >
-          <Link to="/" onClick={()=>setOpen(false)}>Home</Link>
-          <Link to="/posts?sort=trending" onClick={()=>setOpen(false)}>Trending</Link>
-          <Link to="/posts?sort=popular" onClick={()=>setOpen(false)}>Most Popular</Link>
-          <Link to="/" onClick={()=>setOpen(false)}>About</Link>
-          <Link to="/login" onClick={()=>setOpen(false)}>
-            <button className="py-2 px-4 rounded-3xl bg-blue-800 text-white">
-              Login 👋
-            </button>
-          </Link>
+      </div>
+      {open && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <Link to="/" className="block text-gray-700 hover:text-gray-900">Home Page</Link>
+            <Link to="/blog" className="block text-gray-700 hover:text-gray-900">Home Blog</Link>
+            <Link to="/blog/posts?sort=trending" className="block text-gray-700 hover:text-gray-900">Trending</Link>
+            <Link to="/blog/posts?sort=popular" className="block text-gray-700 hover:text-gray-900">Most Popular</Link>
+            {/* <Link to="/blog/" className="block text-gray-700 hover:text-gray-900">About</Link> */}
+          </div>
         </div>
-      </div>
-      {/* DESKTOP MENU */}
-      <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
-        <Link to="/">Home Page</Link>
-        <Link to="/blog">Home Blog</Link>
-        <Link to="/blog/posts?sort=trending">Trending</Link>
-        <Link to="/blog/posts?sort=popular">Most Popular</Link>
-        {/* <Link to="/blog/">About</Link> */}
-      </div>
+      )}
     </div>
   );
 };
