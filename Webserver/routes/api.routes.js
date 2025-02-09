@@ -3,6 +3,7 @@ const router = express.Router();
 const pipelineController = require('../controllers/pipeline.controller');
 const platformController = require('../controllers/platform.controller');
 const toolController = require('../controllers/tool.controller');
+const userController  = require('../controllers/user.controller');
 
 // Pipeline routes
 router.post('/pipelines', pipelineController.createPipeline);
@@ -29,6 +30,9 @@ router.get('/tools/:id', toolController.getToolById);
 router.put('/tools/:id', toolController.updateTool);
 router.delete('/tools/:id', toolController.deleteTool);
 
+
+// Tool routes
+router.get('/user', userController.getUsers);
 // Development routes
 if (process.env.NODE_ENV === 'development') {
     const devController = require('../controllers/dev.controller');
