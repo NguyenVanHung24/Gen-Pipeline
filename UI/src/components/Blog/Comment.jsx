@@ -1,10 +1,10 @@
 import { format } from "timeago.js";
 import Image from "./Image";
 import { toast } from "react-toastify";
-import { useUser } from "../Authen/AuthContext";
-import { useAuth } from "../Authen/AuthContext";
+import { useUser } from "../Extension/AuthContext";
+import { useAuth } from "../Extension/AuthContext";
 import { useEffect } from "react";
-const Comment = ({ comment, postId }) => {
+const Comment = ({ comment, postId, onDelete }) => { // Add onDelete prop
   const { user } = useUser();
   const { getToken } = useAuth(); // Get token via custom hook
   const role = user?.publicMetadata?.role;
@@ -12,15 +12,16 @@ const Comment = ({ comment, postId }) => {
   useEffect(() => {
     console.log("User data in Comment component:", user);
   }, [user]); // This will log whenever 'user' changes
-
+  const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
   const deleteComment = async () => {
     try {
+      const token = await getToken();
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/comments/${comment._id}`,
+        `${API_BASE_URL}/comments/${comment._id}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${getToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -28,13 +29,18 @@ const Comment = ({ comment, postId }) => {
         const errorData = await response.json();
         throw new Error(errorData.message);
       }
-      console.log(user);
       toast.success("Comment deleted successfully");
-      // Optionally, you can add logic to update the comments list in the parent component
+      onDelete?.(comment._id); // Call onDelete callback
     } catch (error) {
       toast.error(error.message);
     }
   };
+
+  // Improve conditional rendering
+  const canDeleteComment = user && (
+    (comment?.user?.username === user?.username) || 
+    role === "admin"
+  );
 
   return (
     <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 mb-8">
@@ -49,16 +55,16 @@ const Comment = ({ comment, postId }) => {
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900">{comment?.user?.username}</p>
           <p className="text-sm text-gray-500">{format(comment?.createdAt)}</p>
+          <p className="text-sm text-gray-500">{user?.username}</p>
         </div>
-        {user &&
-          (comment?.user?.username === user?.username || role === "admin") && (
-            <button
-              className="btn-danger text-xs"
-              onClick={deleteComment}
-            >
-              delete
-            </button>
-          )}
+        {canDeleteComment && (
+          <button
+            className="btn-danger text-xs"
+            onClick={deleteComment}
+          >
+            delete
+          </button>
+        )}
       </div>
       <div className="mt-4">
         <p className="text-sm text-gray-700">{comment?.desc}</p>

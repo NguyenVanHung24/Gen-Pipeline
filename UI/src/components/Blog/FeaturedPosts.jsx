@@ -1,177 +1,131 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Image from "./Image";
 import { toast } from "react-toastify";
-import { useUser } from "../Authen/AuthContext";
-import { useAuth } from "../Authen/AuthContext";
-import { useEffect } from "react";
+import { useUser } from "../Extension/AuthContext";
+import { useAuth } from "../Extension/AuthContext";
 import { format } from "timeago.js";
-import { useQuery } from "@tanstack/react-query";
 
 const FeaturedPosts = () => {
   const { user } = useUser();
-  const { getToken } = useAuth(); // Get token via custom hook
+  const { getToken } = useAuth();
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 
   useEffect(() => {
-    console.log("User data in FeaturedPosts component:", user);
-  }, [user]); // This will log whenever 'user' changes
+    let isMounted = true;
 
-  const fetchPost = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/posts?featured=true&limit=4&sort=newest`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken}`,
-          },
+    const fetchPosts = async () => {
+      try {
+        const token = await getToken();
+        const response = await fetch(
+          `${API_BASE_URL}/posts?featured=true&limit=4&sort=newest`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
+        
+        const data = await response.json();
+        if (isMounted) {
+          setPosts(data.posts || []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setError(error.message);
+          setIsLoading(false);
+          toast.error(error.message);
+        }
       }
-      return response.json();
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+    };
 
-  const { isPending, error, data } = useQuery({
-    queryKey: ["featuredPosts"],
-    queryFn: fetchPost,
-  });
+    fetchPosts();
+    return () => {
+      isMounted = false;
+    };
+  }, [getToken]);
 
-  if (isPending) return "loading...";
-  if (error) return "Something went wrong!" + error.message;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!posts || posts.length === 0) return null;
 
-  const posts = data.posts;
-  if (!posts || posts.length === 0) {
-    return;
-  }
+  const firstPost = posts[0] || {};
+  const otherPosts = posts.slice(1);
 
   return (
     <div className="mt-8 flex flex-col lg:flex-row gap-8">
-      {/* First */}
+      {/* First Post */}
       <div className="w-full lg:w-1/2 flex flex-col gap-4">
-        {/* image */}
-        {posts[0].img && (
+        {firstPost.img && (
           <Image
-            src={posts[0].img}
+            src={firstPost.img}
             className="rounded-3xl object-cover"
             w="895"
+            alt={firstPost.title}
           />
         )}
-        {/* details */}
         <div className="flex items-center gap-4">
           <h1 className="font-semibold lg:text-lg">01.</h1>
-          <Link className="text-blue-800 lg:text-lg">{posts[0].category}</Link>
-          <span className="text-gray-500">{format(posts[0].createdAt)}</span>
+          <Link 
+            to={`/blog/posts?cat=${firstPost.category || ''}`} 
+            className="text-blue-800 lg:text-lg"
+          >
+            {firstPost.category}
+          </Link>
+          <span className="text-gray-500">
+            {firstPost.createdAt ? format(firstPost.createdAt) : ''}
+          </span>
         </div>
-        {/* title */}
         <Link
-          to={posts[0].slug}
+          to={`/blog/${firstPost.slug || ''}`}
           className="text-xl lg:text-3xl font-semibold lg:font-bold"
         >
-          {posts[0].title}
+          {firstPost.title}
         </Link>
       </div>
-      {/* Others */}
+
+      {/* Other Posts */}
       <div className="w-full lg:w-1/2 flex flex-col gap-4">
-        {/* second */}
-        {posts[1] && (
-          <div className="lg:h-1/3 flex justify-between gap-4">
-            {posts[1].img && (
+        {otherPosts.map((post, index) => (
+          <div key={post._id} className="lg:h-1/3 flex justify-between gap-4">
+            {post.img && (
               <div className="w-1/3 aspect-video">
                 <Image
-                  src={posts[1].img}
+                  src={post.img}
                   className="rounded-3xl object-cover w-full h-full"
                   w="298"
+                  alt={post.title}
                 />
               </div>
             )}
-            {/* details and title */}
             <div className="w-2/3">
-              {/* details */}
               <div className="flex items-center gap-4 text-sm lg:text-base mb-4">
-                <h1 className="font-semibold">02.</h1>
-                <Link className="text-blue-800">{posts[1].category}</Link>
+                <h1 className="font-semibold">0{index + 2}.</h1>
+                <Link to={`/blog/posts?cat=${post.category}`} className="text-blue-800">
+                  {post.category}
+                </Link>
                 <span className="text-gray-500 text-sm">
-                  {format(posts[1].createdAt)}
+                  {post.createdAt ? format(post.createdAt) : ''}
                 </span>
               </div>
-              {/* title */}
               <Link
-                to={posts[1].slug}
+                to={`/blog/${post.slug}`}
                 className="text-base sm:text-lg md:text-2xl lg:text-xl xl:text-2xl font-medium"
               >
-                {posts[1].title}
+                {post.title}
               </Link>
             </div>
           </div>
-        )}
-        {/* third */}
-        {posts[2] && (
-          <div className="lg:h-1/3 flex justify-between gap-4">
-            {posts[2].img && (
-              <div className="w-1/3 aspect-video">
-                <Image
-                  src={posts[2].img}
-                  className="rounded-3xl object-cover w-full h-full"
-                  w="298"
-                />
-              </div>
-            )}
-            {/* details and title */}
-            <div className="w-2/3">
-              {/* details */}
-              <div className="flex items-center gap-4 text-sm lg:text-base mb-4">
-                <h1 className="font-semibold">03.</h1>
-                <Link className="text-blue-800">{posts[2].category}</Link>
-                <span className="text-gray-500 text-sm">
-                  {format(posts[2].createdAt)}
-                </span>
-              </div>
-              {/* title */}
-              <Link
-                to={posts[2].slug}
-                className="text-base sm:text-lg md:text-2xl lg:text-xl xl:text-2xl font-medium"
-              >
-                {posts[2].title}
-              </Link>
-            </div>
-          </div>
-        )}
-        {/* fourth */}
-        {posts[3] && (
-          <div className="lg:h-1/3 flex justify-between gap-4">
-            {posts[3].img && (
-              <div className="w-1/3 aspect-video">
-                <Image
-                  src={posts[3].img}
-                  className="rounded-3xl object-cover w-full h-full"
-                  w="298"
-                />
-              </div>
-            )}
-            {/* details and title */}
-            <div className="w-2/3">
-              {/* details */}
-              <div className="flex items-center gap-4 text-sm lg:text-base mb-4">
-                <h1 className="font-semibold">04.</h1>
-                <Link className="text-blue-800">{posts[3].category}</Link>
-                <span className="text-gray-500 text-sm">
-                  {format(posts[3].createdAt)}
-                </span>
-              </div>
-              {/* title */}
-              <Link
-                to={posts[3].slug}
-                className="text-base sm:text-lg md:text-2xl lg:text-xl xl:text-2xl font-medium"
-              >
-                {posts[3].title}
-              </Link>
-            </div>
-          </div>
-        )}
+        ))}
       </div>
     </div>
   );

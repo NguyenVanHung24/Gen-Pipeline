@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);  // Add error state
   const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 
   // Fake data for testing
@@ -29,30 +30,37 @@ export const AuthProvider = ({ children }) => {
             Authorization: `Bearer ${token}`
           }
         });
-        const data = response.data.users; // Access the users key
-        console.log('User data fetched:', response);
+        // Fix: Access data directly from response.data instead of response.data.users
+        const data = response.data; // Changed from response.data.users
+        console.log('User data fetched:', data);
+        
+        if (!data) {
+          throw new Error('No user data received');
+        }
+
         setUser({
           id: data.id,
           username: data.username,
           email: data.email,
           publicMetadata: {
-            role: data.role // Access role directly
+            role: data.role
           }
         });
       } catch (error) {
         console.error('Error fetching user:', error);
+        setError(error);  // Set error state
         logout();
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
-    // if (token) {
-    //   fetchUser();
-    // } else {
-    //   setLoading(false);
-    // }
+    // Only fetch if there's a token
+    if (token) {
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
   }, [token]);
 
   const login = async (credentials) => {
@@ -84,6 +92,7 @@ export const AuthProvider = ({ children }) => {
     user,
     token,
     loading,
+    error,    // Add error to context
     login,
     register,
     logout,
@@ -107,7 +116,11 @@ export const useAuth = () => {
   return {
     getToken: context.getToken,
     isLoaded: !context.loading,
-    isSignedIn: !!context.user
+    isSignedIn: !!context.user,
+    user: context.user,
+    login: context.login,
+    logout: context.logout,
+    register: context.register
   };
 };
 

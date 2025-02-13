@@ -1,36 +1,50 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const connectDB = require('./config/db.config');
+// const postRoutes = require('./routes/post.routes');
+// const authRoutes = require('./routes/auth.routes');
+// const commentRoutes = require('./routes/comment.routes');
+const blogRoutes = require('./routes/blog.routes');
 const apiRoutes = require('./routes/api.routes');
-
+const postRoute = require('./routes/post.routes');
 const app = express();
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors(process.env.CLIENT_URL));
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
+
+  
+app.use('/uploads', express.static('uploads'));
+app.use('/api', apiRoutes);
+app.use('/api/posts', postRoute);
+
+
 
 // Connect to MongoDB
 connectDB();
 
-// Routes
-app.use('/api', apiRoutes);
+// // Routes
+// app.use('/api/posts', postRoutes);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/comments', commentRoutes);
 
-// Basic route
-app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to Pipeline Generator API' });
-});
-
-// Error handling
+// Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something broke!' });
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

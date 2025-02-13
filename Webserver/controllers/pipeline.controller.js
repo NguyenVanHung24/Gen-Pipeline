@@ -1,7 +1,7 @@
 const yaml = require('js-yaml');
-const Tool = require('../models/Tool');
-const Platform = require('../models/Platform');
-const Pipeline = require('../models/Pipeline');
+const Tool = require('../models/tool');
+const Platform = require('../models/platform');
+const Pipeline = require('../models/pipeline');
 
 exports.generateYaml = async (req, res) => {
     try {

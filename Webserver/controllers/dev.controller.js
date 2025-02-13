@@ -1,6 +1,6 @@
-const Platform = require('../models/Platform');
-const Tool = require('../models/Tool');
-const Pipeline = require('../models/Pipeline');
+const Platform = require('../models/platform');
+const Tool = require('../models/tool');
+const Pipeline = require('../models/pipeline');
 
 exports.cleanDatabase = async (req, res) => {
     try {

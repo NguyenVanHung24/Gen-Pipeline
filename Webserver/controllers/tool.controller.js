@@ -1,4 +1,4 @@
-const Tool = require('../models/Tool');
+const Tool = require('../models/tool');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');

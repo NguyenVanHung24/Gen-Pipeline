@@ -1,8 +1,8 @@
 import axios from "axios";
 import Comment from "./Comment";
 import { toast } from "react-toastify";
-import { useUser } from "../Authen/AuthContext";
-import { useAuth } from "../Authen/AuthContext";
+import { useUser } from "../Extension/AuthContext";
+import { useAuth } from "../Extension/AuthContext";
 
 const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 const fetchComments = async (postId) => {
@@ -15,11 +15,38 @@ const fetchComments = async (postId) => {
 const Comments = ({ postId }) => {
   const { user } = useUser();
   const { getToken } = useAuth();
+  const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const handleDeleteComment = (commentId) => {
+    setComments(prev => prev.filter(comment => comment._id !== commentId));
+  };
+
+  // Add comment handling
+  const handleAddComment = async (commentData) => {
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_BASE_URL}/comments/${postId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(commentData),
+      });
+
+      if (!response.ok) throw new Error('Failed to add comment');
+      
+      const newComment = await response.json();
+      setComments(prev => [...prev, newComment]);
+      
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState([]);
-  const [isPosting, setIsPosting] = useState(false);
   const [pendingComment, setPendingComment] = useState(null);
   const queryClient = useQueryClient();
 
@@ -29,7 +56,7 @@ const Comments = ({ postId }) => {
       setIsPending(true);
       try {
         const res = await axios.get(`${API_BASE_URL}/comments/${postId}`);
-        setData(res.data);
+        setComments(res.data);
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -64,7 +91,7 @@ const Comments = ({ postId }) => {
     try {
       const token = await getToken();
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/comments/${postId}`,
+        `${API_BASE_URL}/comments/${postId}`,
         commentData,
         {
           headers: {
@@ -75,7 +102,7 @@ const Comments = ({ postId }) => {
 
       // Refresh comments after successful post
       const res = await axios.get(`${API_BASE_URL}/comments/${postId}`);
-      setData(res.data);
+      setComments(res.data);
       e.target.reset();
     } catch (error) {
       toast.error(error.response?.data || "Failed to post comment");
@@ -120,8 +147,8 @@ const Comments = ({ postId }) => {
             />
           )}
 
-          {data.map((comment) => (
-            <Comment key={comment._id} comment={comment} postId={postId} />
+          {comments.map((comment) => (
+            <Comment key={comment._id} comment={comment} postId={postId} onDelete={handleDeleteComment} />
           ))}
         </>
       )}
