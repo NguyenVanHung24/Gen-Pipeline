@@ -3,16 +3,20 @@ import Image from "./Image";
 import { toast } from "react-toastify";
 import { useUser } from "../Extension/AuthContext";
 import { useAuth } from "../Extension/AuthContext";
-import { useEffect } from "react";
-const Comment = ({ comment, postId, onDelete }) => { // Add onDelete prop
+import { useState, useEffect } from "react";
+import { HiOutlineUser, HiOutlineClock, HiOutlineTrash } from "react-icons/hi";
+
+const Comment = ({ comment, postId, onDelete }) => {
   const { user } = useUser();
-  const { getToken } = useAuth(); // Get token via custom hook
+  const { getToken } = useAuth();
   const role = user?.publicMetadata?.role;
-  // Log user data to check if it exists
+  
   useEffect(() => {
     console.log("User data in Comment component:", user);
-  }, [user]); // This will log whenever 'user' changes
+  }, [user]);
+  
   const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+  
   const deleteComment = async () => {
     try {
       const token = await getToken();
@@ -30,44 +34,65 @@ const Comment = ({ comment, postId, onDelete }) => { // Add onDelete prop
         throw new Error(errorData.message);
       }
       toast.success("Comment deleted successfully");
-      onDelete?.(comment._id); // Call onDelete callback
+      onDelete?.(comment._id);
     } catch (error) {
       toast.error(error.message);
     }
   };
 
-  // Improve conditional rendering
   const canDeleteComment = user && (
     (comment?.user?.username === user?.username) || 
     role === "admin"
   );
 
   return (
-    <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 mb-8">
-      <div className="flex items-center gap-4">
-        
-        {comment?.user?.img && (
-          <Image
-            src={comment?.user?.img}
-            className="h-10 w-10 rounded-full object-cover"
-          />
-        )}
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900">{comment?.user?.username}</p>
-          <p className="text-sm text-gray-500">{format(comment?.createdAt)}</p>
-          <p className="text-sm text-gray-500">{user?.username}</p>
+    <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 mb-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="flex-shrink-0">
+            {comment?.user?.img ? (
+              <Image
+                src={comment?.user?.img}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+                <HiOutlineUser className="h-6 w-6 text-primary-600" />
+              </div>
+            )}
+          </div>
+          
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center space-x-2">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {comment?.user?.username}
+              </span>
+              <div className="flex items-center text-sm text-gray-500">
+                <HiOutlineClock className="h-4 w-4 mr-1" />
+                {format(comment?.createdAt)}
+              </div>
+            </div>
+            {user?.username && (
+              <p className="mt-1 text-sm text-gray-500">
+                Replying as: @{user?.username}
+              </p>
+            )}
+          </div>
         </div>
+
         {canDeleteComment && (
           <button
-            className="btn-danger text-xs"
             onClick={deleteComment}
+            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
-            delete
+            <HiOutlineTrash className="h-4 w-4 mr-1" />
+            Delete
           </button>
         )}
       </div>
-      <div className="mt-4">
-        <p className="text-sm text-gray-700">{comment?.desc}</p>
+
+      <div className="mt-4 text-sm text-gray-700 border-t border-gray-100 pt-4">
+        {comment?.desc}
       </div>
     </div>
   );

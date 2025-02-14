@@ -69,7 +69,8 @@ const FeaturedPosts = () => {
           <Image
             src={firstPost.img}
             className="rounded-3xl object-cover"
-            w="895"
+            w="200"
+            h="150"
             alt={firstPost.title}
           />
         )}

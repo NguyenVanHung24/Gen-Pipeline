@@ -34,7 +34,7 @@ const AppRoutes = () => {
                     <Route index element={<HomePageBlog />} />
                     
                     {/* Route cho danh sách bài viết */}
-                    <Route path="post" element={<PostListPage />} />
+                    <Route path="posts" element={<PostListPage />} />
                     {/* Route cho bài viết cụ thể */}
                     <Route path=":slug" element={<SinglePostPage />} />
                     

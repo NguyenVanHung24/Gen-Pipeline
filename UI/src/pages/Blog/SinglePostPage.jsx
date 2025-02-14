@@ -44,30 +44,36 @@ const SinglePostPage = () => {
   }, [slug, getToken]);
 
   if (isLoading) return (
-    <div className="flex justify-center items-center py-8">
-      <div className="loading-spinner">Loading...</div>
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="flex justify-center items-center py-8">
+        <div className="loading-spinner">Loading...</div>
+      </div>
     </div>
   );
   
   if (error) return (
-    <div className="text-center py-8">
-      <div className="error-message text-red-500">Error: {error}</div>
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="text-center py-8">
+        <div className="error-message text-red-500">Error: {error}</div>
+      </div>
     </div>
   );
 
   if (!post) return (
-    <div className="text-center py-8">Post not found!</div>
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="text-center py-8">Post not found!</div>
+    </div>
   );
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* detail */}
-      <div className="flex gap-8">
-        <div className="lg:w-3/5 flex flex-col gap-8">
-          <h1 className="text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold">
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      {/* Page Header */}
+      <div className="md:flex md:items-center md:justify-between mb-8">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
             {post.title}
-          </h1>
-          <div className="flex items-center gap-2 text-gray-400 text-sm">
+          </h2>
+          <div className="mt-1 text-sm text-gray-500 flex items-center gap-2">
             <span>Written by</span>
             <Link to={`/blog/posts?author=${post.user?.username}`} className="text-blue-800">
               {post.user?.username}
@@ -78,61 +84,78 @@ const SinglePostPage = () => {
             </Link>
             <span>{format(post.createdAt)}</span>
           </div>
-          <p className="text-gray-500 font-medium">{post.desc}</p>
         </div>
-        {post.img && (
-          <div className="hidden lg:block w-2/5">
-            <Image src={post.img} w="600" className="rounded-2xl" />
-          </div>
-        )}
       </div>
 
-      {/* content */}
-      <div className="flex flex-col md:flex-row gap-12 justify-between">
-        {/* text content */}
-        <div className="lg:text-lg flex flex-col gap-6 text-justify">
-          <div dangerouslySetInnerHTML={{ __html: post.content }} />
-        </div>
-
-        {/* sidebar menu */}
-        <div className="px-4 h-max sticky top-8">
-          <h1 className="mb-4 text-sm font-medium">Author</h1>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-8">
-              {post.user?.img && (
-                <Image
-                  src={post.user.img}
-                  className="w-12 h-12 rounded-full object-cover"
-                  w="48"
-                  h="48"
-                />
-              )}
-              <Link to={`/blog/posts?author=${post.user?.username}`} className="text-blue-800">
-                {post.user?.username}
-              </Link>
+      {/* Main Content */}
+      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 mb-8">
+        <div className="flex flex-col gap-8">
+          {/* Post Details */}
+          <div className="flex gap-8">
+            <div className="lg:w-3/5">
+              <p className="text-gray-500 font-medium">{post.desc}</p>
             </div>
-            {post.user?.bio && (
-              <p className="text-sm text-gray-500">{post.user.bio}</p>
+            {post.img && (
+              <div className="hidden lg:block w-2/5">
+                <Image src={post.img} w="400" className="rounded-2xl" />
+              </div>
             )}
           </div>
 
-          <PostMenuActions post={post}/>
+          {/* Post Content */}
+          <div className="flex flex-col md:flex-row gap-12 justify-between">
+            <div className="lg:text-lg flex flex-col gap-6">
+              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            </div>
 
-          {/* Categories */}
-          <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
-          <div className="flex flex-col gap-2 text-sm">
-            <Link to="/blog/posts" className="underline">All</Link>
-            <Link to="/blog/posts?cat=design" className="underline">Web Design</Link>
-            <Link to="/blog/posts?cat=development" className="underline">Development</Link>
-            <Link to="/blog/posts?cat=database" className="underline">Databases</Link>
-            <Link to="/blog/posts?cat=seo" className="underline">Search Engines</Link>
-            <Link to="/blog/posts?cat=marketing" className="underline">Marketing</Link>
+            {/* Sidebar */}
+            <div className="px-4 h-max sticky top-8 w-full md:w-64">
+              {/* Author Section */}
+              <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <h1 className="text-lg font-medium text-gray-900 mb-4">Author</h1>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    {post.user?.img && (
+                      <Image
+                        src={post.user.img}
+                        className="w-12 h-12 rounded-full object-cover"
+                        w="48"
+                        h="48"
+                      />
+                    )}
+                    <Link to={`/blog/posts?author=${post?.user?.username}`} className="text-blue-800">
+                      {post.user?.username}
+                    </Link>
+                  </div>
+                  {post.user?.bio && (
+                    <p className="text-sm text-gray-500">{post.user?.bio}</p>
+                  )}
+                </div>
+              </div>
+
+              <PostMenuActions post={post}/>
+
+              {/* Categories Section */}
+              <div className="bg-white rounded-lg shadow-sm p-4 mt-6">
+                <h1 className="text-lg font-medium text-gray-900 mb-4">Categories</h1>
+                <div className="flex flex-col gap-2">
+                  <Link to="/blog/posts" className="text-blue-800 hover:underline">All</Link>
+                  <Link to="/blog/posts?cat=design" className="text-blue-800 hover:underline">Web Design</Link>
+                  <Link to="/blog/posts?cat=development" className="text-blue-800 hover:underline">Development</Link>
+                  <Link to="/blog/posts?cat=database" className="text-blue-800 hover:underline">Databases</Link>
+                  <Link to="/blog/posts?cat=seo" className="text-blue-800 hover:underline">Search Engines</Link>
+                  <Link to="/blog/posts?cat=marketing" className="text-blue-800 hover:underline">Marketing</Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Comments */}
-      <Comments postId={post._id}/>
+      {/* Comments Section */}
+      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
+        <Comments postId={post?._id}/>
+      </div>
     </div>
   );
 };
