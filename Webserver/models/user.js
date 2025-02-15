@@ -3,20 +3,24 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    clerkUserId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     username: {
       type: String,
       required: true,
       unique: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
       unique: true,
+    },
+    roles: {
+      type: [String],
+      default: ['user'], // Default role for new users
+      enum: ['user', 'admin', 'contributer'], // Restrict to these roles
     },
     img: {
       type: String,
@@ -24,6 +28,9 @@ const userSchema = new Schema(
     savedPosts: {
       type: [String],
       default: [],
+    },
+    refreshToken: {
+      type: String,
     },
   },
   { timestamps: true }

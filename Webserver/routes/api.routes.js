@@ -32,7 +32,7 @@ router.delete('/tools/:id', toolController.deleteTool);
 
 
 // Tool routes
-router.get('/user', userController.getUsers);
+// router.get('/user', userController.getUsers);
 // Development routes
 if (process.env.NODE_ENV === 'development') {
     const devController = require('../controllers/dev.controller');

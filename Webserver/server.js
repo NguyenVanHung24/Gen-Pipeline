@@ -8,6 +8,8 @@ const connectDB = require('./config/db.config');
 const blogRoutes = require('./routes/blog.routes');
 const apiRoutes = require('./routes/api.routes');
 const postRoute = require('./routes/post.routes');
+const useRoute = require('./routes/user.routes');
+const useComments = require('./routes/comment.routes')
 const app = express();
 
 // Middleware
@@ -27,7 +29,8 @@ app.use(function (req, res, next) {
 app.use('/uploads', express.static('uploads'));
 app.use('/api', apiRoutes);
 app.use('/api/posts', postRoute);
-
+app.use('/api/users', useRoute);
+app.use('/api/comments',useComments)
 
 
 // Connect to MongoDB

@@ -98,13 +98,13 @@ const postController = {
 
   createPost: async (req, res) => {
     try {
-      const clerkUserId = req.auth.userId;
+      const userId = req?.user?.id;
 
-      if (!clerkUserId) {
+      if (!userId) {
         return res.status(401).json("Not authenticated!");
       }
       
-      const user = await User.findOne({ clerkUserId });
+      const user = await User.findOne({ userId });
 
       if (!user) {
         return res.status(404).json("User not found!");
@@ -120,8 +120,12 @@ const postController = {
         counter++;
       }
 
-      const newPost = new Post({ user: user._id, slug, ...req.body });
+      const newPost = new Post({ user: userId , slug, ...req.body });
       const post = await newPost.save();
+      // // Populate user data in the response
+      // const populatedPost = await Post.findById(savedPost._id)
+      //   .populate('user', 'username img roles');
+
       res.status(200).json(post);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -130,20 +134,20 @@ const postController = {
 
   deletePost: async (req, res) => {
     try {
-      const clerkUserId = req.auth.userId;
+      const userId = req?.user?.id;
 
-      if (!clerkUserId) {
+      if (!userId) {
         return res.status(401).json("Not authenticated!");
       }
 
-      const role = req.auth.sessionClaims?.metadata?.role || "user";
+      const role = req?.user?.metadata?.role || "user";
 
       if (role === "admin") {
         await Post.findByIdAndDelete(req.params.id);
         return res.status(200).json("Post has been deleted");
       }
 
-      const user = await User.findOne({ clerkUserId });
+      const user = await User.findOne({ userId });
 
       const deletedPost = await Post.findOneAndDelete({
         _id: req.params.id,
@@ -162,14 +166,14 @@ const postController = {
 
   featurePost: async (req, res) => {
     try {
-      const clerkUserId = req.auth.userId;
+      const userId = req?.user?.id;
       const postId = req.body.postId;
 
-      if (!clerkUserId) {
+      if (!userId) {
         return res.status(401).json("Not authenticated!");
       }
 
-      const role = req.auth.sessionClaims?.metadata?.role || "user";
+      const role = req?.user?.metadata?.role || "user";
 
       if (role !== "admin") {
         return res.status(403).json("You cannot feature posts!");
