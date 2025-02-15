@@ -117,6 +117,8 @@ const userController = {
       const { email, password } = req.body;
       
       console.log("Login attempt for:", email);
+      console.log("Request headers:", req.headers);
+      console.log("Origin:", req.headers.origin);
 
       const user = await User.findOne({ email });
       if (!user) {
@@ -133,34 +135,48 @@ const userController = {
       try {
         // Generate tokens
         const tokens = generateTokens(user);
-        console.log("Tokens generated successfully");
+        console.log("Tokens generated:", {
+          accessTokenLength: tokens.accessToken.length,
+          refreshTokenLength: tokens.refreshToken.length
+        });
 
         // Save refresh token to user
         user.refreshToken = tokens.refreshToken;
         await user.save();
         console.log("Refresh token saved to user");
 
-        // Set refresh token in HTTP-only cookie
-        res.cookie('refreshToken', tokens.refreshToken, {
+        const cookieOptions = {
           httpOnly: true,
-          // secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+          secure: false,
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 7 * 24 * 60 * 60 * 1000
+        };
 
-        const { password: _, refreshToken: __, ...userWithoutSensitive } = user._doc;
+        console.log('Setting cookie with options:', cookieOptions);
         
-        res.status(200).json({
-          ...userWithoutSensitive,
-          accessToken: tokens.accessToken
-        });
+        // Set the new refresh token without clearing first
+        res.cookie('refreshToken', tokens.refreshToken, cookieOptions);
+        console.log("Cookie has been set");
+
+        // Remove sensitive data
+        const { password: _, refreshToken: __, ...userWithoutSensitive } = user.toObject();
+        
+        console.log("Preparing response");
+        const response = {
+          accessToken: tokens.accessToken,
+          ...userWithoutSensitive
+        };
+        
+        console.log("Sending response with status 200");
+        return res.status(200).json(response);
       } catch (tokenError) {
         console.error("Token generation failed:", tokenError);
         return res.status(500).json("Error generating tokens");
       }
     } catch (error) {
       console.error("Login error:", error);
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   },
 
@@ -184,20 +200,18 @@ const userController = {
       // Generate new tokens
       const tokens = generateTokens(user);
       
-      // Update refresh token
-      user.refreshToken = tokens.refreshToken;
-      await user.save();
-
-      // Set new refresh token in cookie
+      // Update refresh token in cookie
       res.cookie('refreshToken', tokens.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: false,
+        sameSite: 'none',
+        path: '/',
         maxAge: 7 * 24 * 60 * 60 * 1000
       });
 
       res.json({ accessToken: tokens.accessToken });
     } catch (error) {
+      console.error('Refresh token error:', error);
       res.status(403).json("Invalid refresh token");
     }
   },
@@ -214,8 +228,13 @@ const userController = {
         );
       }
 
-      // Clear refresh token cookie
-      res.clearCookie('refreshToken');
+      // Clear refresh token cookie with same options
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'none',
+        path: '/'
+      });
       res.json("Logged out successfully");
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -1,122 +1,111 @@
-import axios from "axios";
 import Comment from "./Comment";
 import { toast } from "react-toastify";
-import { useUser } from "../Extension/AuthContext";
 import { useAuth } from "../Extension/AuthContext";
 import { useState, useEffect } from "react";
-
-const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+import api from '../../utils/axios';
 
 const Comments = ({ postId }) => {
-  const { user } = useUser();
-  const { getToken } = useAuth();
+  const { user } = useAuth();
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [isPending, setIsPending] = useState(false);
-  const [pendingComment, setPendingComment] = useState(null);
+
+  useEffect(() => {
+    fetchComments();
+  }, [postId]);
+
+  const fetchComments = async () => {
+    setIsLoading(true);
+    try {
+      const res = await api.get(`/comments/${postId}`);
+      setComments(res.data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      toast.error("Error loading comments!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error("Please login to comment");
+      return;
+    }
+
+    const formData = new FormData(e.target);
+    const desc = formData.get("desc");
+
+    if (!desc.trim()) {
+      toast.error("Comment cannot be empty");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await api.post(
+        `/comments/${postId}`,
+        { desc }
+      );
+
+      setComments(prev => [response.data, ...prev]);
+      e.target.reset();
+      toast.success("Comment posted successfully!");
+    } catch (error) {
+      toast.error(error.response?.data || "Failed to post comment");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleDeleteComment = (commentId) => {
     setComments(prev => prev.filter(comment => comment._id !== commentId));
   };
 
-  // Fetch comments
-  useEffect(() => {
-    const fetchComments = async () => {
-      setIsPending(true);
-      try {
-        const res = await axios.get(`${API_BASE_URL}/comments/${postId}`);
-        setComments(res.data);
-        setError(null);
-      } catch (err) {
-        setError(err.message);
-        toast.error("Error loading comments!");
-      } finally {
-        setIsPending(false);
-      }
-    };
-
-    fetchComments();
-  }, [postId]);
-
-  // Handle comment submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const commentData = {
-      desc: formData.get("desc"),
-    };
-
-    // Show pending comment
-    setPendingComment({
-      desc: commentData.desc,
-      createdAt: new Date(),
-      user: {
-        img: user?.imageUrl,
-        username: user?.username,
-      },
-    });
-
-    try {
-      const token = await getToken();
-      const response = await axios.post(
-        `${API_BASE_URL}/comments/${postId}`,
-        commentData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Add new comment to the list
-      setComments(prev => [...prev, response.data]);
-      e.target.reset();
-      setPendingComment(null);
-      toast.success("Comment posted successfully!");
-      
-    } catch (error) {
-      toast.error(error.response?.data || "Failed to post comment");
-      setPendingComment(null);
-    }
-  };
+  if (isLoading) return <div className="text-center py-4">Loading comments...</div>;
+  if (error) return <div className="text-center text-red-500 py-4">Error loading comments!</div>;
 
   return (
     <div className="flex flex-col gap-8 lg:w-3/5 mb-12">
       <h1 className="text-xl text-gray-500 underline">Comments</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center justify-between gap-8 w-full"
-      >
-        <textarea
-          name="desc"
-          placeholder="Write a comment..."
-          className="w-full p-4 rounded-xl"
-        />
-        <button 
-          className="bg-blue-800 px-4 py-3 text-white font-medium rounded-xl"
-          disabled={isPending}
+      
+      {user ? (
+        <form
+          onSubmit={handleSubmit}
+          className="flex items-center justify-between gap-8 w-full"
         >
-          Send
-        </button>
-      </form>
-      {isPending ? (
-        "Loading..."
-      ) : error ? (
-        "Error loading comments!"
+          <textarea
+            name="desc"
+            placeholder="Write a comment..."
+            className="w-full p-4 rounded-xl"
+            disabled={isSubmitting}
+          />
+          <button 
+            className="bg-blue-800 px-4 py-3 text-white font-medium rounded-xl disabled:opacity-50"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Sending...' : 'Send'}
+          </button>
+        </form>
       ) : (
-        <>
-          {pendingComment && (
-            <Comment
-              comment={pendingComment}
-            />
-          )}
-
-          {comments.map((comment) => (
-            <Comment key={comment._id} comment={comment} postId={postId} onDelete={handleDeleteComment} />
-          ))}
-        </>
+        <div className="text-center py-4 text-gray-500">
+          Please login to comment
+        </div>
       )}
+
+      <div className="space-y-4">
+        {comments.map((comment) => (
+          <Comment 
+            key={comment._id} 
+            comment={comment} 
+            postId={postId} 
+            onDelete={handleDeleteComment} 
+          />
+        ))}
+      </div>
     </div>
   );
 };

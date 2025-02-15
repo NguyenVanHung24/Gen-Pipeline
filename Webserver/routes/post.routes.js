@@ -8,6 +8,6 @@ router.get('/', postControllers.getPosts);
 router.get('/:slug', increaseVisitController.increaseVisit, postControllers.getPost);
 router.post('/',verifyToken, postControllers.createPost);
 router.delete('/:id',verifyToken, postControllers.deletePost);
-router.patch('/feature', postControllers.featurePost);
+router.patch('/feature', verifyToken, postControllers.featurePost);
 
 module.exports = router;

@@ -13,34 +13,34 @@ const MainCategories = () => {
           All Posts
         </Link>
         <Link
-          to="/blog/posts?cat=web-design"
+          to="/blog/posts?cat=CI/CD"
           className="hover:bg-blue-50 rounded-full px-4 py-2"
         >
-          Web Design
+          CI/CD
         </Link>
         <Link
-          to="/blog/posts?cat=development"
+          to="/blog/posts?cat=Cloud"
           className="hover:bg-blue-50 rounded-full px-4 py-2"
         >
-          Development
+          Cloud
         </Link>
         <Link
-          to="/blog/posts?cat=databases"
+          to="/blog/posts?cat=Devsecops"
           className="hover:bg-blue-50 rounded-full px-4 py-2"
         >
-          Databases
+          Devsecops
         </Link>
         <Link
-          to="/blog/posts?cat=seo"
+          to="/blog/posts?cat=Security"
           className="hover:bg-blue-50 rounded-full px-4 py-2"
         >
-          Search Engines
+          Security
         </Link>
         <Link
-          to="/blog/posts?cat=marketing"
+          to="/blog/posts?cat=Tools"
           className="hover:bg-blue-50 rounded-full px-4 py-2"
         >
-          Marketing
+          Tools
         </Link>
       </div>
       <span className="text-xl font-medium">|</span>

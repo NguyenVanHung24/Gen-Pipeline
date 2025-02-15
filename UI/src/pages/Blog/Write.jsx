@@ -7,6 +7,8 @@ import Upload from "../../components/Blog/Upload";
 import { toast } from "react-toastify";
 import Layout from "../../components/Layout";
 import { HiOutlineCollection, HiOutlineTag, HiOutlinePhotograph, HiOutlineDocumentText } from 'react-icons/hi';
+import { useAuth } from "../../components/Extension/AuthContext";
+
 
 const Write = () => {
   const [value, setValue] = useState("");
@@ -16,6 +18,9 @@ const Write = () => {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { getToken } = useAuth();
+  const token = getToken()
+  const navigate = useNavigate();
 
   useEffect(() => {
     img && setValue((prev) => prev + `<p><image src="${img.url}"/></p>`);
@@ -28,7 +33,12 @@ const Write = () => {
       );
   }, [video]);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      toast.error("You must be logged in to write a new blog");
+      navigate("/blog/login");
+    }
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +56,8 @@ const Write = () => {
     };
 
     try {
-      const token = "A";
+      const token = getToken()
+      console.log(token)
       const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/posts`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -108,11 +119,11 @@ const Write = () => {
                     className="select-field"
                   >
                     <option value="general">General</option>
-                    <option value="web-design">Web Design</option>
-                    <option value="development">Development</option>
-                    <option value="databases">Databases</option>
-                    <option value="seo">Search Engines</option>
-                    <option value="marketing">Marketing</option>
+                    <option value="CI/CD">CI/CD</option>
+                    <option value="Cloud">Cloud</option>
+                    <option value="Devsecops">Devsecops</option>
+                    <option value="Security">Security</option>
+                    <option value="Tools">Tools</option>
                   </select>
                 </div>
               </div>

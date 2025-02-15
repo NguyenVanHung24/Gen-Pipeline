@@ -117,7 +117,7 @@ const SinglePostPage = () => {
                   <div className="flex items-center gap-4">
                     {post.user?.img && (
                       <Image
-                        src={post.user.img}
+                        src={post.user?.img}
                         className="w-12 h-12 rounded-full object-cover"
                         w="48"
                         h="48"
@@ -140,11 +140,11 @@ const SinglePostPage = () => {
                 <h1 className="text-lg font-medium text-gray-900 mb-4">Categories</h1>
                 <div className="flex flex-col gap-2">
                   <Link to="/blog/posts" className="text-blue-800 hover:underline">All</Link>
-                  <Link to="/blog/posts?cat=design" className="text-blue-800 hover:underline">Web Design</Link>
-                  <Link to="/blog/posts?cat=development" className="text-blue-800 hover:underline">Development</Link>
-                  <Link to="/blog/posts?cat=database" className="text-blue-800 hover:underline">Databases</Link>
-                  <Link to="/blog/posts?cat=seo" className="text-blue-800 hover:underline">Search Engines</Link>
-                  <Link to="/blog/posts?cat=marketing" className="text-blue-800 hover:underline">Marketing</Link>
+                  <Link to="/blog/posts?cat=CI/CD" className="text-blue-800 hover:underline">CI/CD</Link>
+                  <Link to="/blog/posts?cat=Cloud" className="text-blue-800 hover:underline">Cloud</Link>
+                  <Link to="/blog/posts?cat=Devsecops" className="text-blue-800 hover:underline">Devsecops</Link>
+                  <Link to="/blog/posts?cat=Security" className="text-blue-800 hover:underline">Security</Link>
+                  <Link to="/blog/posts?cat=Tools" className="text-blue-800 hover:underline">Tools</Link>
                 </div>
               </div>
             </div>

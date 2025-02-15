@@ -1,48 +1,40 @@
 import { format } from "timeago.js";
 import Image from "./Image";
 import { toast } from "react-toastify";
-import { useUser } from "../Extension/AuthContext";
 import { useAuth } from "../Extension/AuthContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { HiOutlineUser, HiOutlineClock, HiOutlineTrash } from "react-icons/hi";
+import api from "../../utils/axios"; // Import the api utility
 
 const Comment = ({ comment, postId, onDelete }) => {
-  const { user } = useUser();
-  const { getToken } = useAuth();
-  const role = user?.publicMetadata?.role;
-  
-  useEffect(() => {
-    console.log("User data in Comment component:", user);
-  }, [user]);
-  
-  const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+  const { user } = useAuth();
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const deleteComment = async () => {
+    if (!window.confirm('Are you sure you want to delete this comment?')) {
+      return;
+    }
+
+    setIsDeleting(true);
     try {
-      const token = await getToken();
-      const response = await fetch(
-        `${API_BASE_URL}/comments/${comment._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
+      const response = await api.delete(`/comments/${comment._id}`);
+      
+      if (!response.data) {
+        throw new Error('Failed to delete comment');
       }
+      
       toast.success("Comment deleted successfully");
       onDelete?.(comment._id);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   const canDeleteComment = user && (
-    (comment?.user?.username === user?.username) || 
-    role === "admin"
+    (comment?.user?._id === user?._id) || 
+    user?.roles?.includes('admin')
   );
 
   return (
@@ -72,21 +64,17 @@ const Comment = ({ comment, postId, onDelete }) => {
                 {format(comment?.createdAt)}
               </div>
             </div>
-            {user?.username && (
-              <p className="mt-1 text-sm text-gray-500">
-                Replying as: @{user?.username}
-              </p>
-            )}
           </div>
         </div>
 
         {canDeleteComment && (
           <button
             onClick={deleteComment}
-            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            disabled={isDeleting}
+            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
           >
             <HiOutlineTrash className="h-4 w-4 mr-1" />
-            Delete
+            {isDeleting ? 'Deleting...' : 'Delete'}
           </button>
         )}
       </div>

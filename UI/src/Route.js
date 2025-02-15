@@ -14,6 +14,10 @@ import HomePageBlog from './pages/Blog/HomePageBlog';
 import SinglePostPage from './pages/Blog/SinglePostPage';
 import PostListPage from './pages/Blog/PostListPage';
 import Write from './pages/Blog/Write';
+import LoginPage from './pages/Blog/LoginPage';
+import RegisterPage from './pages/Blog/RegisterPage';
+import UserManagement from './pages/Blog/UserManagement';
+import AdminRoute from './components/Extension/AdminRoute';
 const AppRoutes = () => {
     return (
         <Router>
@@ -40,6 +44,10 @@ const AppRoutes = () => {
                     
                     {/* Route tạo bài viết mới */}
                     <Route path="write" element={<Write />} />
+                    <Route path="login" element={<LoginPage />} />
+                    <Route path="register" element={<RegisterPage />} />
+                    <Route path="admin" element={ <AdminRoute><UserManagement /></AdminRoute>
+                        } />
                 </Route>
             </Routes>
         </Router>

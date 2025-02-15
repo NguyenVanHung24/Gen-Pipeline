@@ -166,16 +166,16 @@ const postController = {
 
   featurePost: async (req, res) => {
     try {
-      const userId = req?.user?.id;
+      const userId = req.user?.id;
       const postId = req.body.postId;
 
       if (!userId) {
         return res.status(401).json("Not authenticated!");
       }
+      console.log(req.user) 
+      const role = req.user?.roles || "user";
 
-      const role = req?.user?.metadata?.role || "user";
-
-      if (role !== "admin") {
+      if (!role.includes("admin")) {
         return res.status(403).json("You cannot feature posts!");
       }
 

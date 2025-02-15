@@ -16,8 +16,8 @@ const commentController = {
 
   addComment: async (req, res) => {
     try {
-      const userId = req.user._id;
-      const postId = req.params.postId;
+      const userId = req.user?.id;
+      const postId = req.params?.postId;
       const { desc } = req.body;
 
       const newComment = new Comment({
@@ -37,10 +37,10 @@ const commentController = {
 
   deleteComment: async (req, res) => {
     try {
-      const userId = req.user._id;
-      const userRoles = req.user.roles;
-      const commentId = req.params.id;
-
+      const userId = req.user?.id;
+      const userRoles = req.user?.roles;
+      const commentId = req.params?.id;
+      console.log(userId)
       if (userRoles.includes('admin')) {
         await Comment.findByIdAndDelete(commentId);
         return res.status(200).json("Comment has been deleted");

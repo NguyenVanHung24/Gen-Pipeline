@@ -1,38 +1,29 @@
-import { useAuth, useUser } from "../Extension/AuthContext";
-import { useState } from "react";
+import { useAuth } from "../Extension/AuthContext";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import api from "../../utils/axios";
 
 const PostMenuActions = ({ post }) => {
-  const { user } = useUser();
-  const { getToken } = useAuth();
+  const { user, isSignedIn } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+  
+  const isAdmin = user?.roles?.includes('admin') || false;
 
-  const isAdmin = user?.publicMetadata?.role === "admin" || false;
+  useEffect(() => {
+    console.log('Auth State:', { user, isSignedIn });
+  }, [user, isSignedIn]);
 
   const handleDelete = async () => {
     try {
       setIsLoading(true);
-      const token = await getToken();
-      const response = await fetch(`${API_BASE_URL}/posts/${post._id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
-      }
-
+      await api.delete(`/posts/${post._id}`);
       toast.success("Post deleted successfully!");
       navigate("/blog");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setIsLoading(false);
     }
@@ -41,25 +32,10 @@ const PostMenuActions = ({ post }) => {
   const handleFeature = async () => {
     try {
       setIsLoading(true);
-      const token = await getToken();
-      const response = await fetch(`${API_BASE_URL}/posts/feature`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ postId: post._id }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
-      }
-
-      // Update UI or refetch post data
+      await api.patch('/posts/feature', { postId: post._id });
       toast.success("Post feature status updated!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setIsLoading(false);
     }
@@ -67,30 +43,16 @@ const PostMenuActions = ({ post }) => {
 
   const handleSave = async () => {
     if (!user) {
-      return navigate("/login");
+      return navigate("/blog/login");
     }
 
     try {
       setIsLoading(true);
-      const token = await getToken();
-      const response = await fetch(`${API_BASE_URL}/users/save`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ postId: post._id }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
-      }
-
+      await api.patch('/users/save', { postId: post._id });
       setIsSaved(prev => !prev);
       toast.success(isSaved ? "Post unsaved!" : "Post saved!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setIsLoading(false);
     }
@@ -147,7 +109,7 @@ const PostMenuActions = ({ post }) => {
         )}
 
         {/* Delete Button - Owner or Admin */}
-        {user && (post.user.username === user.username || isAdmin) && (
+        {user && (post?.user?.username === user?.username || isAdmin) && (
           <div
             className="flex items-center gap-2 py-2 text-sm cursor-pointer"
             onClick={handleDelete}
@@ -162,6 +124,7 @@ const PostMenuActions = ({ post }) => {
               <path d="M 21 2 C 19.354545 2 18 3.3545455 18 5 L 18 7 L 10.154297 7 A 1.0001 1.0001 0 0 0 9.984375 6.9863281 A 1.0001 1.0001 0 0 0 9.8398438 7 L 8 7 A 1.0001 1.0001 0 1 0 8 9 L 9 9 L 9 45 C 9 46.645455 10.354545 48 12 48 L 38 48 C 39.645455 48 41 46.645455 41 45 L 41 9 L 42 9 A 1.0001 1.0001 0 1 0 42 7 L 40.167969 7 A 1.0001 1.0001 0 0 0 39.841797 7 L 32 7 L 32 5 C 32 3.3545455 30.645455 2 29 2 L 21 2 z" />
             </svg>
             <span>Delete this Post</span>
+            {/* <p>{JSON.stringify(post, null, 2)}</p> */}
             {isLoading && <span className="text-xs">(in progress)</span>}
           </div>
         )}

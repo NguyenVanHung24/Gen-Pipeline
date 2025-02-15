@@ -21,6 +21,7 @@ const Navbar = () => {
             <Link to="/blog" className="text-gray-700 hover:text-gray-900">Home Blog</Link>
             <Link to="/blog/posts?sort=trending" className="text-gray-700 hover:text-gray-900">Trending</Link>
             <Link to="/blog/posts?sort=popular" className="text-gray-700 hover:text-gray-900">Most Popular</Link>
+            <Link to="/blog/login" className="block text-gray-700 hover:text-gray-900">Login</Link>
             {/* <Link to="/blog/" className="text-gray-700 hover:text-gray-900">About</Link> */}
           </div>
           <div className="md:hidden flex items-center">
@@ -39,17 +40,17 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      {open && (
+      {/* {open && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link to="/" className="block text-gray-700 hover:text-gray-900">Home Page</Link>
             <Link to="/blog" className="block text-gray-700 hover:text-gray-900">Home Blog</Link>
             <Link to="/blog/posts?sort=trending" className="block text-gray-700 hover:text-gray-900">Trending</Link>
             <Link to="/blog/posts?sort=popular" className="block text-gray-700 hover:text-gray-900">Most Popular</Link>
-            {/* <Link to="/blog/" className="block text-gray-700 hover:text-gray-900">About</Link> */}
+            <Link to="/blog/login" className="block text-gray-700 hover:text-gray-900">Login</Link>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
