@@ -50,14 +50,14 @@ const userController = {
 
   savePost: async (req, res) => {
     try {
-      const clerkUserId = req.auth.userId;
+      const userId = req.user.id;
       const postId = req.body.postId;
 
-      if (!clerkUserId) {
+      if (!userId) {
         return res.status(401).json("Not authenticated!");
       }
 
-      const user = await User.findOne({ clerkUserId });
+      const user = await User.findOne({ userId });
       if (!user) {
         return res.status(404).json("User not found");
       }

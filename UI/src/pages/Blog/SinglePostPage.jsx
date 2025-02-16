@@ -68,39 +68,41 @@ const SinglePostPage = () => {
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       {/* Page Header */}
-      <div className="md:flex md:items-center md:justify-between mb-8">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            {post.title}
-          </h2>
-          <div className="mt-1 text-sm text-gray-500 flex items-center gap-2">
-            <span>Written by</span>
-            <Link to={`/blog/posts?author=${post.user?.username}`} className="text-blue-800">
-              {post.user?.username}
-            </Link>
-            <span>on</span>
-            <Link to={`/blog/posts?cat=${post.category}`} className="text-blue-800">
-              {post.category}
-            </Link>
-            <span>{format(post.createdAt)}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 mb-8">
-        <div className="flex flex-col gap-8">
-          {/* Post Details */}
-          <div className="flex gap-8">
-            <div className="lg:w-3/5">
+      
+      {/* Post Details */}
+      <div className="flex gap-8">
+            <div className="lg:w-3/5 flex flex-col gap-8">
+              <h1 className="text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold">
+                {post.title}
+              </h1>
+              <div className="flex items-center gap-2 text-gray-400 text-sm">
+                <span>Written by</span>
+                <Link to={`/blog/posts?author=${post.user?.username}`} className="text-blue-800">
+                  {post.user?.username}
+                </Link>
+                <span>on</span>
+                <Link to={`/blog/posts?cat=${post.category}`} className="text-blue-800">
+                  {post.category}
+                </Link>
+                <span>{format(post.createdAt)}</span>
+              </div>
               <p className="text-gray-500 font-medium">{post.desc}</p>
             </div>
             {post.img && (
               <div className="hidden lg:block w-2/5">
-                <Image src={post.img} w="400" className="rounded-2xl" />
+                <Image 
+                  src={post.img} 
+                  w="200"
+                  h="200" 
+                  className="rounded-2xl object-cover w-full border-2 border-gray-100 shadow-sm" 
+                />
               </div>
             )}
           </div>
+      {/* Main Content */}
+      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6 mb-8">
+        <div className="flex flex-col gap-8">
+          
 
           {/* Post Content */}
           <div className="flex flex-col md:flex-row gap-12 justify-between">

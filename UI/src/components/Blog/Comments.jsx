@@ -69,7 +69,7 @@ const Comments = ({ postId }) => {
   if (error) return <div className="text-center text-red-500 py-4">Error loading comments!</div>;
 
   return (
-    <div className="flex flex-col gap-8 lg:w-3/5 mb-12">
+    <div className="flex flex-col gap-8  mb-12">
       <h1 className="text-xl text-gray-500 underline">Comments</h1>
       
       {user ? (

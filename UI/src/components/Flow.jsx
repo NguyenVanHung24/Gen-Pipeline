@@ -213,7 +213,7 @@ const Flow = ({ mode, steps, platform, language }) => {
             </button>
             
             {/* Generate Pipeline button */}
-            <button
+            {/* <button
               onClick={generatePipeline}
               style={{
                 padding: '8px 16px',
@@ -225,7 +225,7 @@ const Flow = ({ mode, steps, platform, language }) => {
               }}
             >
               Generate Pipeline
-            </button>
+            </button> */}
           </div>
         </div>
         <div style={{ 

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Image from "./Image";
 import { Link } from "react-router-dom";
+import { useAuth } from '../Extension/AuthContext';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { user, logout, isSignedIn } = useAuth();
 
   return (
     <div className="bg-white shadow-md rounded-lg">
@@ -21,8 +23,27 @@ const Navbar = () => {
             <Link to="/blog" className="text-gray-700 hover:text-gray-900">Home Blog</Link>
             <Link to="/blog/posts?sort=trending" className="text-gray-700 hover:text-gray-900">Trending</Link>
             <Link to="/blog/posts?sort=popular" className="text-gray-700 hover:text-gray-900">Most Popular</Link>
-            <Link to="/blog/login" className="block text-gray-700 hover:text-gray-900">Login</Link>
-            {/* <Link to="/blog/" className="text-gray-700 hover:text-gray-900">About</Link> */}
+            {isSignedIn ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <Image 
+                    src={user.img || "default-avatar.png"} 
+                    alt="Profile" 
+                    w={32} 
+                    h={32} 
+                    className="rounded-full"
+                  />
+                </div>
+                <button 
+                  onClick={logout}
+                  className="text-gray-700 hover:text-gray-900"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link to="/blog/login" className="text-gray-700 hover:text-gray-900">Login</Link>
+            )}
           </div>
           <div className="md:hidden flex items-center">
             <button
@@ -51,6 +72,37 @@ const Navbar = () => {
           </div>
         </div>
       )} */}
+      {open && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <Link to="/" className="block text-gray-700 hover:text-gray-900">Home Page</Link>
+            <Link to="/blog" className="block text-gray-700 hover:text-gray-900">Home Blog</Link>
+            <Link to="/blog/posts?sort=trending" className="block text-gray-700 hover:text-gray-900">Trending</Link>
+            <Link to="/blog/posts?sort=popular" className="block text-gray-700 hover:text-gray-900">Most Popular</Link>
+            {isSignedIn ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <Image 
+                    src={user.img || "default-avatar.png"} 
+                    alt="Profile" 
+                    w={32} 
+                    h={32} 
+                    className="rounded-full"
+                  />
+                </div>
+                <button 
+                  onClick={logout}
+                  className="block text-gray-700 hover:text-gray-900 w-full text-left"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link to="/blog/login" className="block text-gray-700 hover:text-gray-900">Login</Link>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
