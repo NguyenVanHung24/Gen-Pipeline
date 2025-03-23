@@ -18,6 +18,9 @@ import LoginPage from './pages/Blog/LoginPage';
 import RegisterPage from './pages/Blog/RegisterPage';
 import UserManagement from './pages/Blog/UserManagement';
 import AdminRoute from './components/Extension/AdminRoute';
+import ForgotPasswordPage from './pages/Blog/ForgotPasswordPage';
+import ResetPasswordPage from './pages/Blog/ResetPasswordPage';
+
 const AppRoutes = () => {
     return (
         <Router>
@@ -46,6 +49,8 @@ const AppRoutes = () => {
                     <Route path="write" element={<Write />} />
                     <Route path="login" element={<LoginPage />} />
                     <Route path="register" element={<RegisterPage />} />
+                    <Route path="forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="reset-password/:token" element={<ResetPasswordPage />} />
                     <Route path="admin" element={ <AdminRoute><UserManagement /></AdminRoute>
                         } />
                 </Route>

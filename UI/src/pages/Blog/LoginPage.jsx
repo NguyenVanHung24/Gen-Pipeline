@@ -1,6 +1,6 @@
 // import { SignIn } from "@clerk/clerk-react";
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { HiOutlineMail, HiOutlineLockClosed } from 'react-icons/hi';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -15,18 +15,18 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Add this function to test CORS
-  const testCORS = () => {
-    api.get('/test-cors')
-      .then(response => {
-        console.log('CORS test response:', response.data);
-        toast.success('CORS test successful! Check console.');
-      })
-      .catch(error => {
-        console.error('CORS test error:', error);
-        toast.error('CORS test failed! Check console.');
-      });
-  };
+  // // Add this function to test CORS
+  // const testCORS = () => {
+  //   api.get('/test-cors')
+  //     .then(response => {
+  //       console.log('CORS test response:', response.data);
+  //       toast.success('CORS test successful! Check console.');
+  //     })
+  //     .catch(error => {
+  //       console.error('CORS test error:', error);
+  //       toast.error('CORS test failed! Check console.');
+  //     });
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,6 +112,14 @@ const LoginPage = () => {
             </div>
           </div>
 
+          <div className="flex items-center justify-end">
+            <div className="text-sm">
+              <Link to="/blog/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+                Forgot your password?
+              </Link>
+            </div>
+          </div>
+
           <div>
             <button
               type="submit"
@@ -122,7 +130,7 @@ const LoginPage = () => {
           </div>
         </form>
 
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <button
             type="button"
             onClick={testCORS}
@@ -130,7 +138,7 @@ const LoginPage = () => {
           >
             Test CORS
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const generateTokens = (user) => {
   try {
@@ -304,6 +306,173 @@ const userController = {
       }
 
       res.status(200).json("User deleted successfully");
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  forgotPassword: async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      // Find user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        // For security reasons, don't reveal if the email exists or not
+        return res.status(200).json({ message: "If your email is registered, you will receive a password reset link" });
+      }
+
+      // Generate random token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      
+      // Hash token before saving to database
+      const hashedToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+      
+      // Set token and expiration (valid for 1 hour)
+      user.resetPasswordToken = hashedToken;
+      user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+      
+      await user.save();
+
+      // Create reset URL
+      const resetUrl = `${process.env.CLIENT_URL}/blog/reset-password/${resetToken}`;
+
+      // For testing purposes, create a test account using Ethereal
+      let testAccount = await nodemailer.createTestAccount();
+      
+      // Configure nodemailer transporter
+      let transporter;
+      
+      // Use Ethereal for testing or Gmail based on environment
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Using Ethereal Mail for testing');
+        transporter = nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
+          secure: false,
+          auth: {
+            user: testAccount.user,
+            pass: testAccount.pass
+          }
+        });
+      } else {
+        console.log('Using configured mail service:', process.env.EMAIL_SERVICE);
+        transporter = nodemailer.createTransport({
+          service: process.env.EMAIL_SERVICE,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
+          }
+        });
+      }
+
+      // Email content
+      const mailOptions = {
+        from: process.env.EMAIL_FROM || 'noreply@yourapp.com',
+        to: user.email,
+        subject: 'Password Reset Request',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+            <h2 style="color: #3b82f6;">Password Reset Request</h2>
+            <p>Hello ${user.username},</p>
+            <p>You recently requested to reset your password. Please click the button below to reset it:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetUrl}" style="background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Reset Password</a>
+            </div>
+            <p>If you didn't request this, please ignore this email.</p>
+            <p>This link is valid for 1 hour.</p>
+            <p>Best regards,<br/>Your App Team</p>
+          </div>
+        `
+      };
+
+      // Send email
+      const info = await transporter.sendMail(mailOptions);
+      
+      // Log email info
+      console.log('Email sent successfully to:', user.email);
+      
+      // If using Ethereal, provide the preview URL
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      }
+
+      res.status(200).json({ message: "Password reset email sent" });
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  verifyResetToken: async (req, res) => {
+    try {
+      const token = req.params.token;
+
+      // Hash the token from URL
+      const hashedToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+      // Find user with matching token and valid expiration
+      const user = await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: { $gt: Date.now() }
+      });
+
+      if (!user) {
+        return res.status(400).json({ error: "Invalid or expired password reset token" });
+      }
+
+      res.status(200).json({ message: "Token is valid" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  resetPassword: async (req, res) => {
+    try {
+      const { password } = req.body;
+      const token = req.params.token;
+      
+      if (!password) {
+        return res.status(400).json({ error: "Password is required" });
+      }
+
+      // Hash the token from URL
+      const hashedToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+      // Find user with matching token and valid expiration
+      const user = await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: { $gt: Date.now() }
+      });
+
+      if (!user) {
+        return res.status(400).json({ error: "Invalid or expired password reset token" });
+      }
+
+      // Hash new password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // Update user's password and remove reset token fields
+      user.password = hashedPassword;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      res.status(200).json({ message: "Password reset successful" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
