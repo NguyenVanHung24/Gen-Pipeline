@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
+import { useAuth } from '../../components/Extension/AuthContext';
+import { toast } from 'react-toastify';
 import { 
     HiOutlineCog, 
     HiOutlineTag, 
@@ -28,24 +31,36 @@ const ToolPage = () => {
     });
     const [editingId, setEditingId] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const navigate = useNavigate();
+    
+    const { isSignedIn, isContributor, isLoaded, getToken } = useAuth();
+    const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 
     useEffect(() => {
-        fetchTools();
-    }, []);
-    const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+        if (isLoaded && isSignedIn && isContributor) {
+            fetchTools();
+        }
+    }, [isLoaded, isSignedIn, isContributor]);
 
     const fetchTools = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/tools`);
+            const token = await getToken();
+            const response = await axios.get(`${API_BASE_URL}/tools`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setTools(response.data.tools);
         } catch (error) {
             console.error('Error fetching tools:', error);
+            toast.error('Failed to load tools. Please try again.');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const token = await getToken();
             const formDataToSend = new FormData();
             formDataToSend.append('name', formData.name);
             formDataToSend.append('version', formData.version);
@@ -58,13 +73,15 @@ const ToolPage = () => {
             if (editingId) {
                 await axios.put(`${API_BASE_URL}/tools/${editingId}`, formDataToSend, {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
             } else {
-                await axios.post(`${API_BASE_URL}/tools`,formDataToSend, {
+                await axios.post(`${API_BASE_URL}/tools`, formDataToSend, {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
             }
@@ -72,18 +89,26 @@ const ToolPage = () => {
             fetchTools();
             resetForm();
             setSelectedFile(null);
+            toast.success(editingId ? 'Tool updated successfully' : 'Tool created successfully');
         } catch (error) {
             console.error('Error saving tool:', error);
+            toast.error('Failed to save tool. Please try again.');
         }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this tool?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/tools/${id}`);
+                const token = await getToken();
+                await axios.delete(`${API_BASE_URL}/tools/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 fetchTools();
             } catch (error) {
                 console.error('Error deleting tool:', error);
+                toast.error('Failed to delete tool. Please try again.');
             }
         }
     };
@@ -140,6 +165,40 @@ const ToolPage = () => {
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]);
     };
+
+    if (!isLoaded) {
+        return (
+            <Layout>
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <p>Loading...</p>
+                </div>
+            </Layout>
+        );
+    }
+
+    if (!isSignedIn) {
+        toast.error('Please login to access this page');
+        navigate('/blog/login', { state: { from: '/tools' } });
+        return null;
+    }
+
+    if (!isContributor) {
+        return (
+            <Layout>
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <div className="bg-red-50 border-l-4 border-red-400 p-4">
+                        <div className="flex">
+                            <div className="ml-3">
+                                <p className="text-red-700">
+                                    You do not have permission to access this page. Only contributors can manage tools.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        );
+    }
 
     return (
         <Layout>

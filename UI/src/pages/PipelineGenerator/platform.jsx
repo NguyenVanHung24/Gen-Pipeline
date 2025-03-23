@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
+import { useAuth } from '../../components/Extension/AuthContext';
+import { toast } from 'react-toastify';
 import { HiOutlineGlobeAlt, HiOutlineCode, HiOutlineLink, HiOutlineClock } from 'react-icons/hi';
 
 const PlatformPage = () => {
@@ -15,49 +18,77 @@ const PlatformPage = () => {
         }
     });
     const [editingId, setEditingId] = useState(null);
+    const navigate = useNavigate();
+    
+    const { isSignedIn, isContributor, isLoaded, getToken } = useAuth();
     const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
 
     useEffect(() => {
-        fetchPlatforms();
-    }, []);
+        if (isLoaded && isSignedIn && isContributor) {
+            fetchPlatforms();
+        }
+    }, [isLoaded, isSignedIn, isContributor]);
 
     const fetchPlatforms = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/platforms`);
+            const token = await getToken();
+            const response = await axios.get(`${API_BASE_URL}/platforms`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setPlatforms(response.data.platforms);
         } catch (error) {
             console.error('Error fetching platforms:', error);
+            toast.error('Failed to load platforms. Please try again.');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const token = await getToken();
             const data = {
                 ...formData,
                 supported_languages: formData.supported_languages.split(',').map(lang => lang.trim())
             };
 
             if (editingId) {
-                await axios.put(`${API_BASE_URL}/platforms/${editingId}`, data);
+                await axios.put(`${API_BASE_URL}/platforms/${editingId}`, data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
             } else {
-                await axios.post(`${API_BASE_URL}/platforms`, data);
+                await axios.post(`${API_BASE_URL}/platforms`, data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
             }
             
             fetchPlatforms();
             resetForm();
+            toast.success(editingId ? 'Platform updated successfully' : 'Platform created successfully');
         } catch (error) {
             console.error('Error saving platform:', error);
+            toast.error('Failed to save platform. Please try again.');
         }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this platform?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/platforms/${id}`);
+                const token = await getToken();
+                await axios.delete(`${API_BASE_URL}/platforms/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 fetchPlatforms();
             } catch (error) {
                 console.error('Error deleting platform:', error);
+                toast.error('Failed to delete platform. Please try again.');
             }
         }
     };
@@ -83,6 +114,40 @@ const PlatformPage = () => {
             }
         });
     };
+
+    if (!isLoaded) {
+        return (
+            <Layout>
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <p>Loading...</p>
+                </div>
+            </Layout>
+        );
+    }
+
+    if (!isSignedIn) {
+        toast.error('Please login to access this page');
+        navigate('/blog/login', { state: { from: '/platforms' } });
+        return null;
+    }
+
+    if (!isContributor) {
+        return (
+            <Layout>
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <div className="bg-red-50 border-l-4 border-red-400 p-4">
+                        <div className="flex">
+                            <div className="ml-3">
+                                <p className="text-red-700">
+                                    You do not have permission to access this page. Only contributors can manage platforms.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        );
+    }
 
     return (
         <Layout>
@@ -320,4 +385,4 @@ const PlatformPage = () => {
     );
 };
 
-export default PlatformPage; 
+export default PlatformPage;

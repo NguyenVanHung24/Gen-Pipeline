@@ -23,4 +23,32 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-module.exports = { verifyToken };
+const verifyContributor = async (req, res, next) => {
+  try {
+    // Get token from header
+    const authHeader = req.header('Authorization');
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    
+    if (!token) {
+      return res.status(401).json("Access denied. No token provided.");
+    }
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    
+    // Check if user is a contributor
+    if (!decoded.role || decoded.role !== 'contributor') {
+      return res.status(403).json("Access denied. Contributor role required.");
+    }
+    
+    req.user = decoded; // Add user info to request
+    next();
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json("Token expired");
+    }
+    return res.status(403).json("Invalid token");
+  }
+};
+
+module.exports = { verifyToken, verifyContributor };

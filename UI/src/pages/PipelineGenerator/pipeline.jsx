@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
+import { useAuth } from '../../components/Extension/AuthContext';
+import { toast } from 'react-toastify';
 import { 
     HiOutlineCode,
     HiOutlineServer, 
@@ -24,66 +27,107 @@ const PipelinePage = () => {
         yaml_content: ''
     });
     const [editingId, setEditingId] = useState(null);
+    const navigate = useNavigate();
 
-    // Fetch initial data
-    useEffect(() => {
-        fetchPipelines();
-        fetchPlatforms();
-        fetchTools();
-    }, []);
-
+    const { isSignedIn, isContributor, isLoaded, getToken } = useAuth();
     const API_BASE_URL = process.env.REACT_APP_BACK_END_URL;
+
+    useEffect(() => {
+        if (isLoaded && isSignedIn && isContributor) {
+            fetchPipelines();
+            fetchPlatforms();
+            fetchTools();
+        }
+    }, [isLoaded, isSignedIn, isContributor]);
 
     const fetchPipelines = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/pipelines`);
+            const token = await getToken();
+            const response = await axios.get(`${API_BASE_URL}/pipelines`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setPipelines(response.data.pipelines);
         } catch (error) {
             console.error('Error fetching pipelines:', error);
+            toast.error('Failed to load pipelines. Please try again.');
         }
     };
 
     const fetchPlatforms = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/platforms`);
+            const token = await getToken();
+            const response = await axios.get(`${API_BASE_URL}/platforms`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setPlatforms(response.data.platforms);
         } catch (error) {
             console.error('Error fetching platforms:', error);
+            toast.error('Failed to load platforms. Please try again.');
         }
     };
 
     const fetchTools = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/tools`);
+            const token = await getToken();
+            const response = await axios.get(`${API_BASE_URL}/tools`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setTools(response.data.tools);
         } catch (error) {
             console.error('Error fetching tools:', error);
+            toast.error('Failed to load tools. Please try again.');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const token = await getToken();
             if (editingId) {
-                await axios.put(`${API_BASE_URL}/pipelines/${editingId}`, formData);
+                await axios.put(`${API_BASE_URL}/pipelines/${editingId}`, formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
             } else {
-                await axios.post(`${API_BASE_URL}/pipelines`, formData);
+                await axios.post(`${API_BASE_URL}/pipelines`, formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
             }
             
             fetchPipelines();
             resetForm();
         } catch (error) {
             console.error('Error saving pipeline:', error);
+            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                alert('You are not authorized to perform this action.');
+            }
         }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this pipeline?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/${id}`);
+                const token = await getToken();
+                await axios.delete(`${API_BASE_URL}/pipelines/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 fetchPipelines();
             } catch (error) {
                 console.error('Error deleting pipeline:', error);
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    alert('You are not authorized to perform this action.');
+                }
             }
         }
     };
@@ -123,6 +167,40 @@ const PipelinePage = () => {
         'Infrastructure as Code Scan',
         'Vulnerability Management'
     ];
+
+    if (!isLoaded) {
+        return (
+            <Layout>
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <p>Loading...</p>
+                </div>
+            </Layout>
+        );
+    }
+
+    if (!isSignedIn) {
+        toast.error('Please login to access this page');
+        navigate('/blog/login', { state: { from: '/pipelines' } });
+        return null;
+    }
+
+    if (!isContributor) {
+        return (
+            <Layout>
+                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <div className="bg-red-50 border-l-4 border-red-400 p-4">
+                        <div className="flex">
+                            <div className="ml-3">
+                                <p className="text-red-700">
+                                    You do not have permission to access this page. Only contributors can manage pipelines.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Layout>
+        );
+    }
 
     return (
         <Layout>

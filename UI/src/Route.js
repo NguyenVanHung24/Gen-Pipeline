@@ -20,7 +20,7 @@ import UserManagement from './pages/Blog/UserManagement';
 import AdminRoute from './components/Extension/AdminRoute';
 import ForgotPasswordPage from './pages/Blog/ForgotPasswordPage';
 import ResetPasswordPage from './pages/Blog/ResetPasswordPage';
-
+import ContributerRoute from './components/Extension/ContributerRoute';
 const AppRoutes = () => {
     return (
         <Router>
@@ -33,9 +33,9 @@ const AppRoutes = () => {
                 <Route path="/generate" element={<PipelineGenerator steps={steps} />} />
                 
                 {/* CRUD Pages */}
-                <Route path="/platforms" element={<PlatformPage />} />
-                <Route path="/tools" element={<ToolPage />} />
-                <Route path="/pipelines" element={<PipelinePage />} />
+                <Route path="/platforms" element={<ContributerRoute><PlatformPage /></ContributerRoute>} />
+                <Route path="/tools" element={<ContributerRoute><ToolPage /></ContributerRoute>} />
+                <Route path="/pipelines" element={<ContributerRoute><PipelinePage /></ContributerRoute>} />
                 <Route path="/blog" element={<MainLayout />}>
                     {/* Trang chủ blog */}
                     <Route index element={<HomePageBlog />} />

@@ -84,6 +84,7 @@ export const useAuth = () => {
     isLoaded: !context.loading,
     isSignedIn: !!context.user,
     isAdmin: context.user?.roles?.includes('admin'),
+    isContributor: context.user?.roles?.includes('contributor'),
     hasRole: (role) => context.user?.roles?.includes(role)
   };
 };

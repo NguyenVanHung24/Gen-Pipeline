@@ -19,7 +19,7 @@ const UserManagement = () => {
     });
     const [editingId, setEditingId] = useState(null);
 
-    const AVAILABLE_ROLES = ['user', 'admin', 'contributer'];
+    const AVAILABLE_ROLES = ['user', 'admin', 'contributor'];
 
     useEffect(() => {
         fetchUsers();
@@ -176,7 +176,7 @@ const UserManagement = () => {
                                 </div>
                                 <div className="mt-1">
                                     <input
-                                        type="url"
+                                        type="text"
                                         value={formData.img}
                                         onChange={(e) => setFormData({...formData, img: e.target.value})}
                                         className="input-field"

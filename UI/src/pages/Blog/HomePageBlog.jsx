@@ -19,11 +19,11 @@ const HomePageBlog = () => {
           </div>
           
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Pipeline Generator Blog
           </h2>
           <p className="mt-2 text-sm text-gray-500">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sequi
-            rerum accusantium.
+          This website is a blog platform for sharing ideas and stories about DevSecOps.
+          You will find a lot of useful information here.
           </p>
         </div>
 
