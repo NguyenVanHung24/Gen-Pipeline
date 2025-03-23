@@ -8,7 +8,7 @@ import {
 } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import api from '../../utils/axios';
-
+import Image from "../../components/Blog/Image";
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [formData, setFormData] = useState({
@@ -225,7 +225,7 @@ const UserManagement = () => {
                                         <div className="flex items-center">
                                             <div className="h-10 w-10 flex-shrink-0">
                                                 {user.img ? (
-                                                    <img
+                                                    <Image
                                                         className="h-10 w-10 rounded-full"
                                                         src={user.img}
                                                         alt={user.username}
