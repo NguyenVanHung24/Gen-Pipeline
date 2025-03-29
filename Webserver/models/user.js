@@ -20,7 +20,7 @@ const userSchema = new Schema(
     roles: {
       type: [String],
       default: ['user'], // Default role for new users
-      enum: ['user', 'admin', 'contributer'], // Restrict to these roles
+      enum: ['user', 'admin', 'contributor'], // Restrict to these roles
     },
     img: {
       type: String,

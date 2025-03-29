@@ -63,7 +63,7 @@ const DropTargetNode = ({ data }) => {
 
   const displayedImages = isSearching && searchTerm.trim()
     ? droppedImages.filter(image => 
-        image.type.toLowerCase().includes(searchTerm.toLowerCase())
+        image.tool.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : droppedImages;
 
@@ -166,11 +166,11 @@ const DropTargetNode = ({ data }) => {
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate group-hover:text-primary-600">
-                    {image.type}
+                    {image.tool}
                   </p>
-                  {image.tool && (
+                  {image.type && (
                     <p className="text-xs text-gray-500 truncate">
-                      {image.tool}
+                      {image.type}
                     </p>
                   )}
                 </div>

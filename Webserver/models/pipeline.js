@@ -5,10 +5,11 @@ const PipelineSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    tools: [{
+    tool_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Tool'
-    }],
+        ref: 'Tool',
+        required: true
+    },
     platform: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Platform',

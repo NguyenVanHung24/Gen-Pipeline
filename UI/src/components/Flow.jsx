@@ -209,7 +209,7 @@ const Flow = ({ mode, steps, platform, language }) => {
                 cursor: 'pointer'
               }}
             >
-              Get Nodes Data
+              Generate File
             </button>
             
             {/* Generate Pipeline button */}
