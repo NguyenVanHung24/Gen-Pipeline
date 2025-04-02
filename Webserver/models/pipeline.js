@@ -5,7 +5,7 @@ const PipelineSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    tool_id: {
+    tool: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tool',
         required: true
@@ -37,7 +37,7 @@ const PipelineSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: false
     }
 }, { timestamps: true });
 

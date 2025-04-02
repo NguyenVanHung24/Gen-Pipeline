@@ -28,6 +28,16 @@ const Navigation = () => {
                                 Generator
                             </Link>
                             <Link
+                                to="/flow-editor"
+                                className={`${
+                                    isActiveLink('/flow-editor')
+                                        ? 'border-primary-500 text-gray-900'
+                                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                                } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                            >
+                                Flow Editor
+                            </Link>
+                            <Link
                                 to="/platforms"
                                 className={`${
                                     isActiveLink('/platforms')
@@ -65,4 +75,4 @@ const Navigation = () => {
     );
 };
 
-export default Navigation; 
+export default Navigation;

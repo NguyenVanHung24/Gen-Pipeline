@@ -36,8 +36,9 @@ const verifyContributor = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     
+    console.log(decoded)
     // Check if user is a contributor
-    if (!decoded.role || decoded.role !== 'contributor') {
+    if (!decoded.roles || !decoded.roles.includes('contributor')) {
       return res.status(403).json("Access denied. Contributor role required.");
     }
     

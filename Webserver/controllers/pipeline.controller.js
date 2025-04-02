@@ -5,16 +5,20 @@ const Pipeline = require('../models/pipeline');
 
 exports.generateYaml = async (req, res) => {
     try {
-        const { tools, platform, language, name } = req.body;
+        const { tool, platform, language, name } = req.body;
 
         // Validate input
-        if (!tools || !platform || !language || !name) {
+        if (!tool || !platform || !language || !name) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Fetch tools and platform
-        const selectedTools = await Tool.find({ _id: { $in: tools } });
+        // Fetch tool and platform
+        const selectedTool = await Tool.findById(tool);
         const selectedPlatform = await Platform.findById(platform);
+
+        if (!selectedTool) {
+            return res.status(404).json({ error: 'Tool not found' });
+        }
 
         if (!selectedPlatform) {
             return res.status(404).json({ error: 'Platform not found' });
@@ -30,11 +34,11 @@ exports.generateYaml = async (req, res) => {
             name: name,
             platform: selectedPlatform.name,
             language: language,
-            tools: selectedTools.map(tool => ({
-                name: tool.name,
-                version: tool.version,
-                config: tool.config
-            }))
+            tool: {
+                name: selectedTool.name,
+                version: selectedTool.version,
+                config: selectedTool.config
+            }
         };
 
         const yamlContent = yaml.dump(pipelineConfig);
@@ -42,7 +46,7 @@ exports.generateYaml = async (req, res) => {
         // Save to database
         const pipeline = new Pipeline({
             name,
-            tools,
+            tool: tool,
             platform,
             language,
             yaml_content: yamlContent
@@ -70,7 +74,7 @@ Content-Type: application/json
 
 {
     "name": "My Pipeline",
-    "tools": ["toolId1", "toolId2"],  // Array of Tool document IDs from MongoDB
+    "tool": "toolId",  // Tool document ID from MongoDB
     "platform": "platformId",          // Platform document ID from MongoDB
     "language": "javascript"           // Must be one of the supported_languages in the platform
 }
@@ -81,12 +85,12 @@ curl -X POST http://localhost:3000/api/generate-yaml \
 -H "Content-Type: application/json" \
 -d '{
     "name": "My Pipeline",
-    "tools": ["toolId1", "toolId2"],
+    "tool": "toolId",
     "platform": "platformId",
     "language": "javascript"
 }'
 
-Note: Replace toolId1, toolId2, and platformId with actual MongoDB ObjectIds from your database.
+Note: Replace toolId and platformId with actual MongoDB ObjectIds from your database.
 */
 
 exports.getTools = async (req, res) => {
@@ -162,7 +166,7 @@ exports.searchPipelines = async (req, res) => {
                     name: { $regex: new RegExp(tool, 'i') }
                 });
                 if (toolDoc) {
-                    pipelineQuery.tools = toolDoc._id;
+                    pipelineQuery.tool = toolDoc._id;
                 } else {
                     return res.status(404).json({
                         message: 'No tool found with the specified name',
@@ -186,9 +190,9 @@ exports.searchPipelines = async (req, res) => {
         // Find pipelines with populated references
         const pipelines = await Pipeline.find(pipelineQuery)
             .populate('platform')
-            .populate('tools')
+            .populate('tool')
             .sort({ createdAt: -1 })
-            .exec(); // Add explicit exec() call
+            .exec();
 
         if (!pipelines || pipelines.length === 0) {
             return res.status(404).json({ 
@@ -208,11 +212,11 @@ exports.searchPipelines = async (req, res) => {
             } : null,
             language: pipeline.language,
             stage: pipeline.stage,
-            tools: pipeline.tools.map(tool => ({
-                name: tool.name,
-                version: tool.version,
-                config: tool.config
-            })),
+            tool: pipeline.tool ? {
+                name: pipeline.tool.name,
+                version: pipeline.tool.version,
+                config: pipeline.tool.config
+            } : null,
             yaml_content: pipeline.yaml_content,
             created_at: pipeline.createdAt,
             updated_at: pipeline.updatedAt
@@ -238,7 +242,7 @@ exports.getPipelineById = async (req, res) => {
         
         const pipeline = await Pipeline.findById(id)
             .populate('platform')
-            .populate('tools');
+            .populate('tool');
 
         if (!pipeline) {
             return res.status(404).json({ 
@@ -265,19 +269,19 @@ exports.testApi = async (req, res) => {
 
 exports.createPipeline = async (req, res) => {
     try {
-        const { name, tools, platform, language, stage, yaml_content } = req.body;
+        const { name, tool, platform, language, stage, yaml_content } = req.body;
 
         // Validate required fields
-        if (!name || !tools || !platform || !language || !stage || !yaml_content) {
+        if (!name || !tool || !platform || !language || !stage || !yaml_content) {
             return res.status(400).json({
                 error: 'Missing required fields',
-                required: ['name', 'tools', 'platform', 'language', 'stage', 'yaml_content']
+                required: ['name', 'tool', 'platform', 'language', 'stage', 'yaml_content']
             });
         }
 
         const pipeline = new Pipeline({
             name,
-            tools,
+            tool,
             platform,
             language,
             stage,
@@ -300,7 +304,7 @@ exports.getAllPipelines = async (req, res) => {
     try {
         const pipelines = await Pipeline.find()
             .populate('platform')
-            .populate('tools')
+            .populate('tool')
             .sort({ createdAt: -1 });
 
         res.status(200).json({
@@ -318,7 +322,7 @@ exports.getAllPipelines = async (req, res) => {
 
 exports.updatePipeline = async (req, res) => {
     try {
-        const { name, tools, platform, language, stage, yaml_content } = req.body;
+        const { name, tool, platform, language, stage, yaml_content } = req.body;
         
         const pipeline = await Pipeline.findById(req.params.id);
         if (!pipeline) {
@@ -332,14 +336,14 @@ exports.updatePipeline = async (req, res) => {
             req.params.id,
             {
                 name: name || pipeline.name,
-                tools: tools || pipeline.tools,
+                tool: tool || pipeline.tool,
                 platform: platform || pipeline.platform,
                 language: language || pipeline.language,
                 stage: stage || pipeline.stage,
                 yaml_content: yaml_content || pipeline.yaml_content
             },
             { new: true }
-        ).populate('platform').populate('tools');
+        ).populate('platform').populate('tool');
 
         res.status(200).json(updatedPipeline);
 

@@ -19,7 +19,7 @@ const PipelinePage = () => {
     const [tools, setTools] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
-        tools: [],
+        tool: '',
         platform: '',
         language: '',
         stage: '',
@@ -136,7 +136,7 @@ const PipelinePage = () => {
         setEditingId(pipeline._id);
         setFormData({
             name: pipeline.name,
-            tools: pipeline.tools.map(tool => tool._id),
+            tool: pipeline.tool._id,
             platform: pipeline.platform._id,
             language: pipeline.language,
             stage: pipeline.stage,
@@ -149,7 +149,7 @@ const PipelinePage = () => {
         setEditingId(null);
         setFormData({
             name: '',
-            tools: [],
+            tool: '',
             platform: '',
             language: '',
             stage: '',
@@ -309,20 +309,20 @@ const PipelinePage = () => {
                                 </div>
                             </div>
 
-                            {/* Tools Selection */}
+                            {/* Tool Selection */}
                             <div className="sm:col-span-3">
                                 <div className="flex items-center">
                                     <HiOutlineCog className="h-5 w-5 text-gray-400 mr-2" />
                                     <label className="block text-sm font-medium text-gray-700">
-                                        Security Tools
+                                        Security Tool
                                     </label>
                                 </div>
                                 <div className="mt-1">
                                     <select
-                                        value={formData.tools}
+                                        value={formData.tool}
                                         onChange={(e) => setFormData({
                                             ...formData,
-                                            tools: [e.target.value]
+                                            tool: e.target.value
                                         })}
                                         required
                                         className="select-field"
@@ -430,7 +430,7 @@ const PipelinePage = () => {
                                     <th className="table-header">Pipeline</th>
                                     <th className="table-header">Platform & Language</th>
                                     <th className="table-header">Stage</th>
-                                    <th className="table-header">Tools</th>
+                                    <th className="table-header">Tool</th>
                                     <th className="table-header">Actions</th>
                                 </tr>
                             </thead>
@@ -469,14 +469,11 @@ const PipelinePage = () => {
                                         </td>
                                         <td className="table-cell">
                                             <div className="flex flex-wrap gap-1">
-                                                {pipeline.tools.map(tool => (
-                                                    <span 
-                                                        key={tool._id}
-                                                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
-                                                    >
-                                                        {tool.name}
-                                                    </span>
-                                                ))}
+                                                <span 
+                                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+                                                >
+                                                    {pipeline.tool.name}
+                                                </span>
                                             </div>
                                         </td>
                                         <td className="table-cell">

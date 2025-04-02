@@ -21,6 +21,8 @@ import AdminRoute from './components/Extension/AdminRoute';
 import ForgotPasswordPage from './pages/Blog/ForgotPasswordPage';
 import ResetPasswordPage from './pages/Blog/ResetPasswordPage';
 import ContributerRoute from './components/Extension/ContributerRoute';
+import FlowEditor from './pages/FlowEditor';
+
 const AppRoutes = () => {
     return (
         <Router>
@@ -29,8 +31,8 @@ const AppRoutes = () => {
                 {/* Redirect root to generate */}
                 {/* <Route path="/" element={<Navigate to="/generate" replace />} /> */}
                 <Route path="/" element={<Homepage />} />
-                {/* All components under /generate path */}
                 <Route path="/generate" element={<PipelineGenerator steps={steps} />} />
+                <Route path="/flow-editor" element={<FlowEditor />} />
                 
                 {/* CRUD Pages */}
                 <Route path="/platforms" element={<ContributerRoute><PlatformPage /></ContributerRoute>} />
