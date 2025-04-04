@@ -458,10 +458,10 @@ const FlowGraph = () => {
 
   return (
     <div className="flex h-full">
-      {/* Sidebar with stages, tools and actions */}
+      {/* Sidebar with stages */}
       <div className="flex flex-col w-72 border-r border-gray-200 bg-white">
-        {/* Add Stage Panel - Changed to vertical layout with scroll */}
-        <div className="p-3 border-b h-48 flex flex-col">
+        {/* Add Stage Panel - Adjusted height */}
+        <div className="p-3 border-b h-2/3 flex flex-col">
           <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-2">
             Add Stage
           </h3>
@@ -479,13 +479,58 @@ const FlowGraph = () => {
             </div>
           </div>
         </div>
-        
-        {/* Tools Panel - With search functionality */}
-        <div className="flex-1 p-4 overflow-auto flex flex-col">
+
+        {/* Action Buttons */}
+        <div className="p-4 border-t bg-gray-50">
+          <div className="space-y-2">
+            <button
+              onClick={handleGetNodesData}
+              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-200 text-sm"
+            >
+              View Pipeline Data
+            </button>
+            
+            <button
+              onClick={handleGenerateYaml}
+              className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition duration-200 text-sm"
+            >
+              Generate YAML
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Flow Editor */}
+      <div className="flex-1" ref={reactFlowWrapper}>
+        <ReactFlow
+          elements={elements}
+          onElementsRemove={onElementsRemove}
+          onConnect={onConnect}
+          onNodeDragStop={onNodeDragStop}
+          onSelectionChange={onSelectionChange}
+          nodeTypes={nodeTypes}
+          connectionLineStyle={{ stroke: '#3182ce' }}
+          defaultZoom={0.7} // Adjusted to 70% of the current size
+          minZoom={0.2}
+          maxZoom={4}
+          fitView
+          deleteKeyCode={46} // Use Delete key (key code 46)
+        >
+          <Controls />
+          <MiniMap 
+            nodeStrokeColor="#3182ce"
+            nodeColor="#e2e8f0"
+          />
+          <Background color="#f8fafc" gap={16} />
+        </ReactFlow>
+      </div>
+
+      {/* Tools Panel - Adjusted height */}
+      <div className="flex flex-col w-72 border-l border-gray-200 bg-white">
+        <div className="p-4 h-3/4 overflow-auto flex flex-col">
           <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">
             Drag & Drop Tools
           </h3>
-          
           {/* Search bar for tools */}
           <div className="mb-3">
             <input
@@ -496,7 +541,6 @@ const FlowGraph = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
             />
           </div>
-          
           <div className="space-y-2 flex-1 overflow-auto">
             {filteredTools.length === 0 ? (
               <div className="text-center py-4 text-gray-500">
@@ -535,50 +579,6 @@ const FlowGraph = () => {
             )}
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="p-4 border-t bg-gray-50">
-          <div className="space-y-2">
-            <button
-              onClick={handleGetNodesData}
-              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-200 text-sm"
-            >
-              View Pipeline Data
-            </button>
-            
-            <button
-              onClick={handleGenerateYaml}
-              className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition duration-200 text-sm"
-            >
-              Generate YAML
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Flow Editor */}
-      <div className="flex-1" ref={reactFlowWrapper}>
-        <ReactFlow
-          elements={elements}
-          onElementsRemove={onElementsRemove}
-          onConnect={onConnect}
-          onNodeDragStop={onNodeDragStop}
-          onSelectionChange={onSelectionChange}
-          nodeTypes={nodeTypes}
-          connectionLineStyle={{ stroke: '#3182ce' }}
-          defaultZoom={1.5}
-          minZoom={0.2}
-          maxZoom={4}
-          fitView
-          deleteKeyCode={46} // Use Delete key (key code 46)
-        >
-          <Controls />
-          <MiniMap 
-            nodeStrokeColor="#3182ce"
-            nodeColor="#e2e8f0"
-          />
-          <Background color="#f8fafc" gap={16} />
-        </ReactFlow>
       </div>
 
       {/* Modal for displaying data */}
