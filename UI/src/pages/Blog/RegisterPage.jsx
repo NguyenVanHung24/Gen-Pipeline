@@ -6,9 +6,9 @@ import {
   HiOutlineLockClosed, 
   HiOutlinePhotograph 
 } from 'react-icons/hi';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import Upload from "../../components/Blog/Upload";
+import api from '../../utils/axios';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -31,8 +31,8 @@ const RegisterPage = () => {
     }
 
     try {
-      await axios.post(
-        `${process.env.REACT_APP_BACK_END_URL}/users/register`, 
+      await api.post(
+        '/users/register', 
         {
           username: formData.username,
           email: formData.email,

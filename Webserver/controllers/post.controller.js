@@ -205,6 +205,32 @@ const postController = {
     const result = imagekit.getAuthenticationParameters();
     res.send(result);
   },
+
+  editPost: async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const userId = req.user.id;
+
+      const post = await Post.findOne({ slug }); // Use slug instead of id
+
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+
+      if (post.user.toString() !== userId) {
+        return res.status(403).json({ message: 'You are not authorized to edit this post' });
+      }
+
+      const updates = req.body;
+      Object.assign(post, updates);
+      await post.save();
+
+      res.status(200).json({ message: 'Post updated successfully', post });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  },
 };
 
 module.exports = postController;

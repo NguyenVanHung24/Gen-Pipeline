@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from '../../utils/axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Upload from "../../components/Blog/Upload";
@@ -56,9 +56,8 @@ const Write = () => {
     };
 
     try {
-      const token = getToken()
-      console.log(token)
-      const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/posts`, data, {
+      const token = getToken();
+      const response = await api.post('/posts', data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

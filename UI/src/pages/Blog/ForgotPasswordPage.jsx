@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { HiOutlineMail } from 'react-icons/hi';
-import axios from 'axios';
+
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import api from '../../utils/axios';

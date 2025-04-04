@@ -2,11 +2,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { HiOutlineMail, HiOutlineLockClosed } from 'react-icons/hi';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../components/Extension/AuthContext';
 import api from '../../utils/axios';
-// import { useAuth } from '../../components/Extension/AuthContext';
+
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -15,24 +14,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // // Add this function to test CORS
-  // const testCORS = () => {
-  //   api.get('/test-cors')
-  //     .then(response => {
-  //       console.log('CORS test response:', response.data);
-  //       toast.success('CORS test successful! Check console.');
-  //     })
-  //     .catch(error => {
-  //       console.error('CORS test error:', error);
-  //       toast.error('CORS test failed! Check console.');
-  //     });
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACK_END_URL}/users/login`, 
+      const response = await api.post(
+        '/users/login', 
         formData,
         { withCredentials: true }
       );
@@ -129,16 +115,6 @@ const LoginPage = () => {
             </button>
           </div>
         </form>
-
-        {/* <div className="mt-4">
-          <button
-            type="button"
-            onClick={testCORS}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-          >
-            Test CORS
-          </button>
-        </div> */}
       </div>
     </div>
   );

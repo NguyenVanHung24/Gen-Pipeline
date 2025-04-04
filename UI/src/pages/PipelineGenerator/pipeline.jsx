@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../components/Extension/AuthContext';
@@ -43,7 +43,7 @@ const PipelinePage = () => {
     const fetchPipelines = async () => {
         try {
             const token = await getToken();
-            const response = await axios.get(`${API_BASE_URL}/pipelines`, {
+            const response = await api.get(`${API_BASE_URL}/pipelines`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -58,7 +58,7 @@ const PipelinePage = () => {
     const fetchPlatforms = async () => {
         try {
             const token = await getToken();
-            const response = await axios.get(`${API_BASE_URL}/platforms`, {
+            const response = await api.get(`${API_BASE_URL}/platforms`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -73,7 +73,7 @@ const PipelinePage = () => {
     const fetchTools = async () => {
         try {
             const token = await getToken();
-            const response = await axios.get(`${API_BASE_URL}/tools`, {
+            const response = await api.get(`${API_BASE_URL}/tools`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -90,13 +90,13 @@ const PipelinePage = () => {
         try {
             const token = await getToken();
             if (editingId) {
-                await axios.put(`${API_BASE_URL}/pipelines/${editingId}`, formData, {
+                await api.put(`${API_BASE_URL}/pipelines/${editingId}`, formData, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
             } else {
-                await axios.post(`${API_BASE_URL}/pipelines`, formData, {
+                await api.post(`${API_BASE_URL}/pipelines`, formData, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -117,7 +117,7 @@ const PipelinePage = () => {
         if (window.confirm('Are you sure you want to delete this pipeline?')) {
             try {
                 const token = await getToken();
-                await axios.delete(`${API_BASE_URL}/pipelines/${id}`, {
+                await api.delete(`${API_BASE_URL}/pipelines/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

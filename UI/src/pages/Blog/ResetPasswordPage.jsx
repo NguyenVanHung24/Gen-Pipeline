@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { HiOutlineLockClosed } from 'react-icons/hi';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import api from '../../utils/axios';
 

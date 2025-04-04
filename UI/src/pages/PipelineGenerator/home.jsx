@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ReactFlowProvider } from 'react-flow-renderer';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/axios';
 import Flow from '../../components/Flow';
-import steps from '../../campaign';
 
 const IndexPage = () => {
     const navigate = useNavigate();
@@ -19,8 +18,8 @@ const IndexPage = () => {
     useEffect(() => {
         const fetchPlatforms = async () => {
             try {
-                console.log(API_BASE_URL)
-                const response = await axios.get(`${API_BASE_URL}/platforms`);
+                console.log(API_BASE_URL);
+                const response = await api.get(`${API_BASE_URL}/platforms`);
                 setPlatforms(response.data.platforms);
                 console.log(response.data.platforms);
             } catch (error) {
@@ -150,10 +149,12 @@ const IndexPage = () => {
                             <button
                                 onClick={() => {
                                     if (selectedConfig.platform && selectedConfig.language) {
-                                        // Navigate with state to pass data to PipelineGenerator component
-                                        navigate('/generate', {
+                                        // Find the platform object from the platforms array to get its name
+                                        const platformObj = platforms.find(p => p._id === selectedConfig.platform);
+                                        // Navigate with state to pass data to FlowEditor component
+                                        navigate('/flow-editor', {
                                             state: {
-                                                platform: selectedConfig.platform.name,
+                                                platform: platformObj ? platformObj.name : selectedConfig.platform, // Pass platform name instead of ID
                                                 language: selectedConfig.language
                                             }
                                         });

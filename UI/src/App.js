@@ -1,12 +1,14 @@
 import React from 'react';
 import AppRoutes from './Route';
 import './styles.css';
-import steps from './campaign';
 import { AuthProvider } from './components/Extension/AuthContext';
+
 const App = () => { 
-    return <AuthProvider>
-        <AppRoutes steps={steps} />;
-    </AuthProvider>
+    return (
+        <AuthProvider>
+            <AppRoutes />
+        </AuthProvider>
+    );
 };
 
-export default App; 
+export default App;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../components/Extension/AuthContext';
@@ -32,7 +32,7 @@ const PlatformPage = () => {
     const fetchPlatforms = async () => {
         try {
             const token = await getToken();
-            const response = await axios.get(`${API_BASE_URL}/platforms`, {
+            const response = await api.get(`${API_BASE_URL}/platforms`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -54,13 +54,13 @@ const PlatformPage = () => {
             };
 
             if (editingId) {
-                await axios.put(`${API_BASE_URL}/platforms/${editingId}`, data, {
+                await api.put(`${API_BASE_URL}/platforms/${editingId}`, data, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
             } else {
-                await axios.post(`${API_BASE_URL}/platforms`, data, {
+                await api.post(`${API_BASE_URL}/platforms`, data, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -80,7 +80,7 @@ const PlatformPage = () => {
         if (window.confirm('Are you sure you want to delete this platform?')) {
             try {
                 const token = await getToken();
-                await axios.delete(`${API_BASE_URL}/platforms/${id}`, {
+                await api.delete(`${API_BASE_URL}/platforms/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

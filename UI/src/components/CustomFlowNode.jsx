@@ -92,10 +92,12 @@ const CustomFlowNode = ({ data }) => {
           </div>
         )}
         
+        {/* 
         <div className="mt-3 w-full flex justify-between text-xs text-gray-500">
           <div>Analytics: {data.analytics}</div>
           <div>Target: {data.target}</div>
-        </div>
+        </div> 
+        */}
       </div>
 
       <Handle

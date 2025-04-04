@@ -1,13 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import CampaignProfile from './CampaignProfile';
-import FullScreen from './FullScreen';
-import PipelineGenerator from './pages/PipelineGenerator';
 import PlatformPage from './pages/PipelineGenerator/platform';
 import ToolPage from './pages/PipelineGenerator/tool';
 import PipelinePage from './pages/PipelineGenerator/pipeline';
-import Navigation from './components/Navigation';
-import steps from './campaign';
 import Homepage from './pages/PipelineGenerator/home';
 import MainLayout from './pages/Blog/MainLayout';
 import HomePageBlog from './pages/Blog/HomePageBlog';
@@ -21,7 +16,8 @@ import AdminRoute from './components/Extension/AdminRoute';
 import ForgotPasswordPage from './pages/Blog/ForgotPasswordPage';
 import ResetPasswordPage from './pages/Blog/ResetPasswordPage';
 import ContributerRoute from './components/Extension/ContributerRoute';
-import FlowEditor from './pages/FlowEditor';
+import FlowEditor from './pages/PipelineGenerator/FlowEditor';
+import EditPost from './pages/Blog/EditPost';
 
 const AppRoutes = () => {
     return (
@@ -31,7 +27,7 @@ const AppRoutes = () => {
                 {/* Redirect root to generate */}
                 {/* <Route path="/" element={<Navigate to="/generate" replace />} /> */}
                 <Route path="/" element={<Homepage />} />
-                <Route path="/generate" element={<PipelineGenerator steps={steps} />} />
+                {/* <Route path="/generate" element={<PipelineGenerator steps={steps} />} /> */}
                 <Route path="/flow-editor" element={<FlowEditor />} />
                 
                 {/* CRUD Pages */}
@@ -55,6 +51,7 @@ const AppRoutes = () => {
                     <Route path="reset-password/:token" element={<ResetPasswordPage />} />
                     <Route path="admin" element={ <AdminRoute><UserManagement /></AdminRoute>
                         } />
+                    <Route path="edit/:slug" element={<EditPost />} />
                 </Route>
             </Routes>
         </Router>

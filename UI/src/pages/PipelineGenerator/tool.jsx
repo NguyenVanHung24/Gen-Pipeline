@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../components/Extension/AuthContext';
@@ -25,8 +25,7 @@ const ToolPage = () => {
             scan_timeout: 300,
             exclude_patterns: 'node_modules, dist, build',
             type: '',
-            target: 'Full repository',
-            analytics: 0
+            target: 'Repository'
         }
     });
     const [editingId, setEditingId] = useState(null);
@@ -45,7 +44,7 @@ const ToolPage = () => {
     const fetchTools = async () => {
         try {
             const token = await getToken();
-            const response = await axios.get(`${API_BASE_URL}/tools`, {
+            const response = await api.get(`${API_BASE_URL}/tools`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -71,17 +70,17 @@ const ToolPage = () => {
             }
 
             if (editingId) {
-                await axios.put(`${API_BASE_URL}/tools/${editingId}`, formDataToSend, {
+                await api.put(`${API_BASE_URL}/tools/${editingId}`, formDataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${token}`
+                        Authorization: `Bearer ${token}`
                     }
                 });
             } else {
-                await axios.post(`${API_BASE_URL}/tools`, formDataToSend, {
+                await api.post(`${API_BASE_URL}/tools`, formDataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${token}`
+                        Authorization: `Bearer ${token}`
                     }
                 });
             }
@@ -100,7 +99,7 @@ const ToolPage = () => {
         if (window.confirm('Are you sure you want to delete this tool?')) {
             try {
                 const token = await getToken();
-                await axios.delete(`${API_BASE_URL}/tools/${id}`, {
+                await api.delete(`${API_BASE_URL}/tools/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -129,8 +128,7 @@ const ToolPage = () => {
                     tool.config.exclude_patterns || '',
                 scan_timeout: tool.config.scan_timeout || 300,
                 type: tool.config.type || '',
-                target: tool.config.target || 'Full repository',
-                analytics: tool.config.analytics || 0
+                target: tool.config.target || 'Repository'
             }
         });
     };
@@ -146,8 +144,7 @@ const ToolPage = () => {
                 scan_timeout: 300,
                 exclude_patterns: 'node_modules, dist, build',
                 type: '',
-                target: '',
-                analytics: 0
+                target: 'Repository'
             }
         });
     };
@@ -345,30 +342,27 @@ const ToolPage = () => {
                                 </p>
                             </div>
 
-                            {/* Analytics Score */}
+                            {/* Target */}
                             <div className="sm:col-span-3">
                                 <div className="flex items-center">
-                                    <HiOutlineChartBar className="h-5 w-5 text-gray-400 mr-2" />
+                                    <HiOutlineAdjustments className="h-5 w-5 text-gray-400 mr-2" />
                                     <label className="block text-sm font-medium text-gray-700">
-                                        Analytics Score
+                                        Target
                                     </label>
                                 </div>
                                 <div className="mt-1">
                                     <input
-                                        type="number"
-                                        value={formData.config.analytics}
+                                        type="text"
+                                        value={formData.config.target}
                                         onChange={(e) => setFormData({
                                             ...formData,
-                                            config: {...formData.config, analytics: parseInt(e.target.value)}
+                                            config: { ...formData.config, target: e.target.value }
                                         })}
-                                        min="0"
-                                        max="100"
+                                        required
                                         className="input-field"
+                                        placeholder="Repository"
                                     />
                                 </div>
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Score between 0 and 100
-                                </p>
                             </div>
 
                             {/* Tool Image */}
@@ -424,7 +418,7 @@ const ToolPage = () => {
                                     <th className="table-header">Tool</th>
                                     <th className="table-header">Type</th>
                                     <th className="table-header">Configuration</th>
-                                    <th className="table-header">Analytics</th>
+                                    <th className="table-header">Target</th>
                                     <th className="table-header">Actions</th>
                                 </tr>
                             </thead>
@@ -470,16 +464,8 @@ const ToolPage = () => {
                                             </div>
                                         </td>
                                         <td className="table-cell">
-                                            <div className="flex items-center">
-                                                <div className="w-16 bg-gray-200 rounded-full h-2.5">
-                                                    <div 
-                                                        className="bg-primary-600 h-2.5 rounded-full" 
-                                                        style={{ width: `${tool.config.analytics}%` }}
-                                                    ></div>
-                                                </div>
-                                                <span className="ml-2 text-sm text-gray-500">
-                                                    {tool.config.analytics}%
-                                                </span>
+                                            <div className="text-sm text-gray-500">
+                                                {tool.config.target}
                                             </div>
                                         </td>
                                         <td className="table-cell">
