@@ -43,11 +43,7 @@ const PipelinePage = () => {
     const fetchPipelines = async () => {
         try {
             const token = await getToken();
-            const response = await api.get(`${API_BASE_URL}/pipelines`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await api.get(`${API_BASE_URL}/pipelines`);
             setPipelines(response.data.pipelines);
         } catch (error) {
             console.error('Error fetching pipelines:', error);
@@ -58,11 +54,7 @@ const PipelinePage = () => {
     const fetchPlatforms = async () => {
         try {
             const token = await getToken();
-            const response = await api.get(`${API_BASE_URL}/platforms`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await api.get(`${API_BASE_URL}/platforms`);
             setPlatforms(response.data.platforms);
         } catch (error) {
             console.error('Error fetching platforms:', error);
@@ -73,11 +65,7 @@ const PipelinePage = () => {
     const fetchTools = async () => {
         try {
             const token = await getToken();
-            const response = await api.get(`${API_BASE_URL}/tools`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await api.get(`${API_BASE_URL}/tools`);
             setTools(response.data.tools);
         } catch (error) {
             console.error('Error fetching tools:', error);
@@ -90,17 +78,9 @@ const PipelinePage = () => {
         try {
             const token = await getToken();
             if (editingId) {
-                await api.put(`${API_BASE_URL}/pipelines/${editingId}`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                await api.put(`${API_BASE_URL}/pipelines/${editingId}`, formData);
             } else {
-                await api.post(`${API_BASE_URL}/pipelines`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                await api.post(`${API_BASE_URL}/pipelines`, formData);
             }
             
             fetchPipelines();

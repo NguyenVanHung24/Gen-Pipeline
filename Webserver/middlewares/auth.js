@@ -26,16 +26,17 @@ const verifyToken = async (req, res, next) => {
 const verifyContributor = async (req, res, next) => {
   try {
     // Get token from header
+    console.log("SDFSD")
     const authHeader = req.header('Authorization');
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-    
+    console.log(token)
     if (!token) {
       return res.status(401).json("Access denied. No token provided.");
     }
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-    
+    console.log("SDFSD")
     console.log(decoded)
     // Check if user is a contributor
     if (!decoded.roles || !decoded.roles.includes('contributor')) {
