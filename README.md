@@ -42,54 +42,6 @@ The platform is built as a web application hosted on an AWS EC2 instance, utiliz
 
 This workflow ensures consistency by using predefined components, preventing invalid configurations, and guiding users through standardized setup options. Contributors can add new tools and platforms to expand the platform’s offerings.
 
-## Installation
-
-### Prerequisites
-- **Docker** and **Docker Compose**: Required to run the application and its dependencies.
-- **Node.js** and **npm**: For the frontend development (if applicable, e.g., React-based UI).
-- **AWS EC2 Instance**: Recommended for deployment, with Ubuntu Server 24 LTS, t2.medium instance type (2 vCPUs, 4GB RAM).
-- **GitLab Account**: For storing the pipeline templates and integrating with CI/CD.
-
-### Setup Instructions
-1. **Clone the Repository**:
-   ```bash
-   git clone https://gitlab.com/your-group/your-project.git
-   cd your-project
-   ```
-
-2. **Set Up Environment Variables**:
-   Create a `.env` file in the project root and add the following variables:
-   ```plaintext
-   DATABASE_URL=postgresql://user:password@localhost:5432/devsecops_db
-   SECRET_KEY=your-secret-key
-   DEFECT_DOJO_URL=http://<ec2-ip>:8080
-   DEFECT_DOJO_API_KEY=your-api-key
-   SONAR_HOST_URL=http://<ec2-ip>:9000
-   SONAR_TOKEN=your-sonar-token
-   ```
-
-3. **Install Dependencies**:
-   - For the backend (e.g., if using a Python/Django setup):
-     ```bash
-     pip install -r requirements.txt
-     ```
-   - For the frontend (e.g., if using React):
-     ```bash
-     cd frontend
-     npm install
-     ```
-
-4. **Run the Application with Docker Compose**:
-   Ensure Docker and Docker Compose are installed, then start the application:
-   ```bash
-   docker-compose up -d
-   ```
-
-5. **Access the Application**:
-   - The application will be available at `http://<ec2-ip>:8080`.
-   - SonarQube (if used) at `http://<ec2-ip>:9000`.
-   - DefectDojo (if used) at `http://<ec2-ip>:8080`.
-
 
 ## Usage
 
@@ -120,9 +72,9 @@ This workflow ensures consistency by using predefined components, preventing inv
 We welcome contributions to improve the DevSecOps Pipeline Generator Platform! To contribute:
 
 1. **Fork the Repository**:
-   Fork the project on GitLab and clone your fork:
+   Fork the project on Github and clone your fork:
    ```bash
-   git clone https://gitlab.com/your-username/your-project.git
+   git clone https://github.com/NguyenVanHung24/Gen-Pipeline
    ```
 
 2. **Create a Feature Branch**:
@@ -149,6 +101,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For questions, support, or to request Contributor access, please contact the project maintainers at `your-email@example.com`.
+For questions, support, or to request Contributor access, please contact the project maintainers at `vanhungvtbn24@gmail.comcom`.
 
 ---
