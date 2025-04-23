@@ -1,0 +1,5 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+
+### Development Operations
+# Development and test endpoints 

@@ -1,0 +1,6 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+@toolId = replace_with_tool_id
+
+### Tool CRUD Operations
+# All tool-related requests 

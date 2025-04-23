@@ -1,0 +1,10 @@
+data/
+# Your current .gitignore
+data/
+
+# Try to be more specific:
+# Try to be more specific:
+Database/data/
+Database/data/**
+/data/
+/data/**

@@ -1,0 +1,43 @@
+# Pipeline Generator Web Server
+
+A web server built with Node.js and MongoDB that generates YAML pipeline configurations based on user queries.
+
+## Features
+
+- Generate custom pipeline YAML files
+- Support for multiple tools, CI platforms, and programming languages
+- MongoDB integration for storing configurations
+- RESTful API endpoints
+- YAML file generation
+
+## Prerequisites
+
+- Node.js (v14 or higher)
+- MongoDB
+- npm or yarn
+
+## Installation
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Configure MongoDB connection
+4. Start the server: `npm start`
+
+## API Endpoints
+
+- POST /api/generate-yaml - Generate pipeline YAML
+- GET /api/tools - List available tools
+- GET /api/platforms - List CI platforms
+- GET /api/languages - List supported languages
+
+## Usage
+
+[Add usage examples here]
+
+## Contributing
+
+[Add contribution guidelines here]
+
+## License
+
+[Add license information here]

@@ -1,0 +1,8 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+@platformId = 675ea7eff7d855682c6f33ff
+@toolId = replace_with_tool_id
+@pipelineId = replace_with_pipeline_id
+
+### Pipeline CRUD and Search Operations
+# All pipeline-related requests 
