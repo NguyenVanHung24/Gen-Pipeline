@@ -10,7 +10,9 @@ import {
     HiOutlineTag,
     HiOutlineCog,
     HiOutlineCollection,
-    HiOutlineTerminal
+    HiOutlineTerminal,
+    HiOutlineChat,
+    HiOutlineArrowLeft
 } from 'react-icons/hi';
 
 const PipelinePage = () => {

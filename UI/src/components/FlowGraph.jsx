@@ -10,6 +10,12 @@ import CustomFlowNode from './CustomFlowNode';
 import axios from 'axios';
 import { useAuth } from '../components/Extension/AuthContext';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { 
+  HiOutlineCog, 
+  HiOutlineServer, 
+  HiOutlineCollection 
+} from 'react-icons/hi';
 
 const nodeTypes = {
   customNode: CustomFlowNode
@@ -48,6 +54,9 @@ const stageTemplates = [
 ];
 
 const FlowGraph = () => {
+  const navigate = useNavigate();
+  const { isContributor } = useAuth();
+
   // Initial nodes based on provided data
   const initialElements = [
     // Nodes
@@ -520,6 +529,44 @@ const FlowGraph = () => {
             >
               Generate YAML
             </button>
+
+            {/* Contributor Management Buttons */}
+            {isContributor && (
+              <>
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-gray-50 text-gray-500">Management</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => navigate('/pipelines')}
+                  className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition duration-200 text-sm flex items-center justify-center"
+                >
+                  <HiOutlineCollection className="h-5 w-5 mr-2" />
+                  Manage Pipelines
+                </button>
+
+                <button
+                  onClick={() => navigate('/platforms')}
+                  className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition duration-200 text-sm flex items-center justify-center"
+                >
+                  <HiOutlineServer className="h-5 w-5 mr-2" />
+                  Manage Platforms
+                </button>
+
+                <button
+                  onClick={() => navigate('/tools')}
+                  className="w-full py-2 px-4 bg-pink-600 hover:bg-pink-700 text-white font-medium rounded-md transition duration-200 text-sm flex items-center justify-center"
+                >
+                  <HiOutlineCog className="h-5 w-5 mr-2" />
+                  Manage Tools
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

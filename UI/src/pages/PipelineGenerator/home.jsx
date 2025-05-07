@@ -165,7 +165,7 @@ const IndexPage = () => {
                                         // Find the platform object from the platforms array to get its name
                                         const platformObj = platforms.find(p => p._id === selectedConfig.platform);
                                         // Navigate with state to pass data to FlowEditor component
-                                        navigate('/flow-editor', {
+                                        navigate('/blog/login', {
                                             state: {
                                                 platform: platformObj ? platformObj.name : selectedConfig.platform, // Pass platform name instead of ID
                                                 language: selectedConfig.language
