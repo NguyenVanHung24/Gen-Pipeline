@@ -18,31 +18,31 @@ const nodeTypes = {
 // List of stage templates that can be added to the flow
 const stageTemplates = [
   {
-    type: 'secret-scan',
+    type: 'Secret Scanning',
     phase: 'Secret Scanning',
   },
   {
-    type: 'sca',
+    type: 'Software Composition Analysis',
     phase: 'Software Composition Analysis',
   },
   {
-    type: 'sast',
+    type: 'Static Application Security Testing',
     phase: 'Static Application Security Testing',
   },
   {
-    type: 'dast',
+    type: 'Dynamic Application Security Testing',
     phase: 'Dynamic Application Security Testing',
   },
   {
-    type: 'container-security',
+    type: 'Container Security',
     phase: 'Container Security',
   },
   {
-    type: 'iac-scan',
+    type: 'Infrastructure as Code Scan',
     phase: 'Infrastructure as Code Scan',
   },
   {
-    type: 'vulnerability-management',
+    type: 'Vulnerability Management',
     phase: 'Vulnerability Management',
   }
 ];
@@ -61,7 +61,7 @@ const FlowGraph = () => {
         currentTool: "",
         hasImage: false,
         phase: "Secret Scanning",
-        type: "secret-scan",
+        type: "Secret Scanning",
         analytics: 0,
         target: 100
       },
@@ -76,7 +76,7 @@ const FlowGraph = () => {
         currentTool: "",
         hasImage: false,
         phase: "Software Composition Analysis",
-        type: "sca",
+        type: "Software Composition Analysis",
         analytics: 0,
         target: 100
       },
@@ -192,6 +192,27 @@ const FlowGraph = () => {
   const handleToolDropOnNode = (nodeId, tool) => {
     console.log('Tool dropped on node:', nodeId);
     console.log('Tool data:', tool);
+    console.log('Current elements:', elements);
+    
+    // Find the node being updated
+    const node = elements.find(el => el.id === nodeId);
+    console.log('Found node:', node);
+    
+    if (!node) {
+      console.error('Node not found:', nodeId);
+      toast.error('Error: Node not found. Please try again.');
+      return;
+    }
+
+    // Validate if the tool's stage matches the node's stage
+    if (tool.config?.type !== node.data.type) {
+      console.log('Stage validation failed:', {
+        toolType: tool.config?.type,
+        nodeType: node.data.type
+      });
+      toast.error(`Invalid stage! This tool belongs to ${tool.config?.type} stage, but you're dropping it on ${node.data.type} stage.`);
+      return;
+    }
     
     setElements((els) => 
       els.map(el => {
@@ -205,7 +226,7 @@ const FlowGraph = () => {
             analytics: tool.config?.analytics || 0,
             target: tool.config?.target || 100,
             toolData: tool,
-            onDropTool: el.data.onDropTool || ((t) => handleToolDropOnNode(nodeId, t))
+            onDropTool: el.data.onDropTool
           };
           
           console.log('Updated node data:', updatedData);
@@ -219,7 +240,7 @@ const FlowGraph = () => {
       })
     );
 
-    toast.success(`${tool.name} added to node ${nodeId}`);
+    toast.success(`${tool.name} added to ${node.data.phase} stage`);
   };
 
   // Add onDropTool to initial nodes after component mounts
@@ -250,8 +271,8 @@ const FlowGraph = () => {
       id: newNodeId,
       type: 'customNode',
       position: { 
-        x: Math.random() * 300 + 50,
-        y: Math.random() * 300 + 50
+        x: Math.random() * 500 + 50,
+        y: Math.random() * 500 + 50
       },
       data: {
         nodeId: nodeIdCounter,
@@ -262,9 +283,12 @@ const FlowGraph = () => {
         type: stageTemplate.type,
         analytics: 0,
         target: 100,
+        toolData: null,
         onDropTool: (tool) => handleToolDropOnNode(newNodeId, tool)
       }
     };
+
+    console.log('Adding new node:', newNode);
 
     // Add the new node to the elements array
     setElements((els) => [...els, newNode]);

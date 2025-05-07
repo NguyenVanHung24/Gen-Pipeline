@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Handle } from 'react-flow-renderer';
+import { toast } from 'react-toastify';
 
 const CustomFlowNode = ({ data }) => {
   // State để theo dõi khi nào đang kéo thả trên node
@@ -12,11 +13,19 @@ const CustomFlowNode = ({ data }) => {
     try {
       const toolData = JSON.parse(e.dataTransfer.getData('application/json'));
       console.log('Drop event fired with data:', toolData);
+      
+      // Validate if the tool's stage matches the node's stage
+      if (toolData.config?.type !== data.type) {
+        toast.error(`Invalid stage! This tool belongs to ${toolData.config?.type} stage, but you're dropping it on ${data.type} stage.`);
+        return;
+      }
+
       if (data.onDropTool && toolData) {
         data.onDropTool(toolData);
       }
     } catch (error) {
       console.error('Error handling drop:', error);
+      toast.error('Error processing the tool drop. Please try again.');
     }
   };
 

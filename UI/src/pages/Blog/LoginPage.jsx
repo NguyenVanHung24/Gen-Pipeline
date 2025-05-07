@@ -1,7 +1,7 @@
 // import { SignIn } from "@clerk/clerk-react";
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { HiOutlineMail, HiOutlineLockClosed } from 'react-icons/hi';
+import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../components/Extension/AuthContext';
 import api from '../../utils/axios';
@@ -23,7 +23,7 @@ const LoginPage = () => {
         { withCredentials: true }
       );
 
-      console.log('Login Response:', response.data); // Debug log
+      console.log('Login Response:', response.data);
 
       const { accessToken, ...userData } = response.data;
       
@@ -31,15 +31,29 @@ const LoginPage = () => {
         throw new Error('No access token received');
       }
 
-      // Use the login function from AuthContext
       await login({ accessToken, ...userData });
       
       toast.success('Login successful');
-      navigate('/blog');
+      navigate('/flow-editor');
     } catch (error) {
       console.error('Login error:', error);
       toast.error(error.response?.data?.message || 'Login failed');
     }
+  };
+
+  const handleGuestLogin = () => {
+    // Set guest user data
+    const guestUser = {
+      email: 'guest@example.com',
+      role: 'guest',
+      isGuest: true
+    };
+    
+    // Store guest info in localStorage
+    localStorage.setItem('guestUser', JSON.stringify(guestUser));
+    
+    toast.success('Welcome as Guest!');
+    navigate('/flow-editor');
   };
 
   return (
@@ -106,12 +120,30 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <div>
+          <div className="space-y-4">
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Sign in
+            </button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGuestLogin}
+              className="w-full flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <HiOutlineUser className="h-5 w-5 mr-2 text-gray-400" />
+              Join as Guest
             </button>
           </div>
         </form>

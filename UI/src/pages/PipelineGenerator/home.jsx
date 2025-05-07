@@ -58,10 +58,23 @@ const IndexPage = () => {
                         <h1 className="text-5xl font-bold text-white mb-6">
                             DevSecOps Pipeline Generator
                         </h1>
-                        <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                        <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
                             Generate secure CI/CD pipelines with integrated security tools. 
                             Drag and drop security tools to create your custom DevSecOps pipeline template.
                         </p>
+                        {/* Navigation Buttons */}
+                        <div className="flex justify-center space-x-4">
+                            <button
+                                onClick={() => navigate('/blog')}
+                                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition duration-200 flex items-center"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
+                                    <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
+                                </svg>
+                                Visit Blog
+                            </button>
+                        </div>
                     </div>
 
                     {/* Features Grid */}
