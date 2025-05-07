@@ -12,7 +12,10 @@ import {
     HiOutlineCollection,
     HiOutlineTerminal,
     HiOutlineChat,
-    HiOutlineArrowLeft
+    HiOutlineArrowLeft,
+    HiOutlineDocumentText,
+    HiOutlineClock,
+    HiOutlineChartBar
 } from 'react-icons/hi';
 
 const PipelinePage = () => {
@@ -187,6 +190,26 @@ const PipelinePage = () => {
     return (
         <Layout>
             <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                {/* Navigation Buttons */}
+                <div className="flex justify-between items-center mb-8">
+                    <div className="flex space-x-4">
+                        <button
+                            onClick={() => navigate('/flow-editor')}
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                            <HiOutlineArrowLeft className="h-5 w-5 mr-2" />
+                            Back to Flow Editor
+                        </button>
+                        <button
+                            onClick={() => navigate('/blog')}
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                        >
+                            <HiOutlineChat className="h-5 w-5 mr-2" />
+                            Visit Blog
+                        </button>
+                    </div>
+                </div>
+
                 {/* Page Header */}
                 <div className="md:flex md:items-center md:justify-between mb-8">
                     <div className="flex-1 min-w-0">
