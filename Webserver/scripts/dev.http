@@ -1,0 +1,148 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+@userId = 681dee6f6d5162af5d7aa3c0
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MWRlZTZmNmQ1MTYyYWY1ZDdhYTNjMCIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzQ2NzkyMzM2LCJleHAiOjE3NDY3OTMyMzZ9.lC-TJEZjE3P_rsqF3RDv_6rfY4NMYfP8Y7VtHzaQBJE
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MWRlZTZmNmQ1MTYyYWY1ZDdhYTNjMCIsImlhdCI6MTc0Njc5MjE0NSwiZXhwIjoxNzQ3Mzk2OTQ1fQ.dH2sm9lO1RmyqC92jvov0OedoZzZ8X-LHT9uzG7fL0c
+
+### =================== Authentication Operations ===================
+
+### Register New User
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "email": "test@example.com",
+    "password": "password123",
+    "img": "default.jpg"
+}
+
+### Login User
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+### Refresh Access Token
+POST {{baseUrl}}/users/refresh-token
+Content-Type: application/json
+Cookie: refreshToken={{refreshToken}}
+
+### Logout User
+POST {{baseUrl}}/users/logout
+Content-Type: application/json
+Cookie: refreshToken={{refreshToken}}
+
+
+### Update User (Protected)
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "username": "updated_username",
+    "email": "updated@example.com",
+    "img": "new_image.jpg",
+    "roles": ["user"]
+}
+
+### Delete User (Protected)
+DELETE {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### Get All Users (Protected)
+GET {{baseUrl}}/users
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+
+
+# Register Success Response:
+# {
+#     "_id": "...",
+#     "username": "testuser",
+#     "email": "test@example.com",
+#     "img": "default.jpg",
+#     "roles": ["user"],
+#     "createdAt": "2024-01-12T10:30:00.000Z",
+#     "updatedAt": "2024-01-12T10:30:00.000Z"
+# }
+
+# Login Success Response:
+# {
+#     "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+#     "_id": "...",
+#     "username": "testuser",
+#     "email": "test@example.com",
+#     "img": "default.jpg",
+#     "roles": ["user"]
+# }
+
+# Refresh Token Success Response:
+# {
+#     "accessToken": "eyJhbGciOiJIUzI1NiIs..."
+# }
+
+# Logout Success Response:
+# "Logged out successfully"
+
+# Password Reset Email Response:
+# {
+#     "message": "If your email is registered, you will receive a password reset link"
+# }
+
+# Verify Reset Token Success Response:
+# {
+#     "message": "Token is valid"
+# }
+
+# Reset Password Success Response:
+# {
+#     "message": "Password reset successful"
+# }
+
+# Get All Users Success Response:
+# [
+#     {
+#         "_id": "...",
+#         "username": "user1",
+#         "email": "user1@example.com",
+#         "img": "profile1.jpg",
+#         "roles": ["user"]
+#     }
+# ]
+
+# Get Current User Success Response:
+# {
+#     "_id": "...",
+#     "username": "testuser",
+#     "email": "test@example.com",
+#     "img": "default.jpg",
+#     "roles": ["user"]
+# }
+
+# Save Post Success Response:
+# "Post saved"
+
+# Update User Success Response:
+# {
+#     "_id": "...",
+#     "username": "updated_username",
+#     "email": "updated@example.com",
+#     "img": "new_image.jpg",
+#     "roles": ["user"]
+# }
+
+# Delete User Success Response:
+# "User deleted successfully"
+
+# Error Response:
+# {
+#     "error": "Error message here"
+# } 

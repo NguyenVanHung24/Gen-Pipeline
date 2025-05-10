@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
-const { verifyToken } = require('../middlewares/auth');
+const { verifyToken, verifyAdmin } = require('../middlewares/auth');
 
 // Public routes
 router.post('/register', userController.registerUser);
@@ -15,11 +15,11 @@ router.get('/reset-password/:token', userController.verifyResetToken);
 router.post('/reset-password/:token', userController.resetPassword);
 
 // Protected routes
-router.get('/', verifyToken, userController.getAllUsers);
-router.get('/saved', verifyToken, userController.getUserSavedPosts);
-router.patch('/save', verifyToken, userController.savePost);
-router.put('/:id', verifyToken, userController.updateUser);
-router.delete('/:id', verifyToken, userController.deleteUser);
-router.get('/me', verifyToken, userController.getCurrentUser);
+router.get('/', verifyAdmin, userController.getAllUsers);
+router.get('/saved', verifyAdmin, userController.getUserSavedPosts);
+router.patch('/save', verifyAdmin, userController.savePost);
+router.put('/:id', verifyAdmin, userController.updateUser);
+router.delete('/:id', verifyAdmin, userController.deleteUser);
+router.get('/me', verifyAdmin, userController.getCurrentUser);
 
 module.exports = router;

@@ -1,0 +1,95 @@
+### Variables
+@baseUrl = http://localhost:3001/api
+@postId = 67efc6e6771c623a30e363c0
+@commentId = replace_with_comment_id
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MWRlZTZmNmQ1MTYyYWY1ZDdhYTNjMCIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzQ2NzkyMzM2LCJleHAiOjE3NDY3OTMyMzZ9.lC-TJEZjE3P_rsqF3RDv_6rfY4NMYfP8Y7VtHzaQBJE
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MWRlZTZmNmQ1MTYyYWY1ZDdhYTNjMCIsImlhdCI6MTc0Njc5MjE0NSwiZXhwIjoxNzQ3Mzk2OTQ1fQ.dH2sm9lO1RmyqC92jvov0OedoZzZ8X-LHT9uzG7fL0c
+
+### =================== Authentication Operations ===================
+
+### Login User (Get Token)
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+### Refresh Token
+POST {{baseUrl}}/users/refresh-token
+Content-Type: application/json
+Cookie: refreshToken={{refreshToken}}
+
+### =================== Comment Operations ===================
+
+### Get Comments for a Post (Public)
+GET {{baseUrl}}/comments/{{postId}}
+Content-Type: application/json
+
+### Add New Comment (Protected)
+POST {{baseUrl}}/comments/{{postId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "desc": "This is a test comment"
+}
+
+### Delete Comment (Protected - Admin)
+DELETE {{baseUrl}}/comments/{{commentId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Delete Comment (Protected - User)
+DELETE {{baseUrl}}/comments/{{commentId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### =================== Example Responses ===================
+
+# Get Comments Response:
+# [
+#     {
+#         "_id": "...",
+#         "desc": "This is a test comment",
+#         "user": {
+#             "username": "testuser",
+#             "img": "profile.jpg",
+#             "roles": ["user"]
+#         },
+#         "post": "post_id_here",
+#         "createdAt": "2024-01-12T10:30:00.000Z",
+#         "updatedAt": "2024-01-12T10:30:00.000Z"
+#     }
+# ]
+
+# Add Comment Success Response:
+# {
+#     "_id": "...",
+#     "desc": "This is a test comment",
+#     "user": {
+#         "username": "testuser",
+#         "img": "profile.jpg",
+#         "roles": ["user"]
+#     },
+#     "post": "post_id_here",
+#     "createdAt": "2024-01-12T10:30:00.000Z",
+#     "updatedAt": "2024-01-12T10:30:00.000Z"
+# }
+
+# Delete Comment Success Response (Admin):
+# "Comment has been deleted"
+
+# Delete Comment Success Response (User):
+# "Comment deleted"
+
+# Delete Comment Error Response (Not Authorized):
+# {
+#     "error": "You can delete only your comment!"
+# }
+
+# Error Response:
+# {
+#     "error": "Error message here"
+# } 
