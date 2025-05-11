@@ -3,9 +3,11 @@ import { ReactFlowProvider } from 'react-flow-renderer';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/axios';
 import Flow from '../../components/Flow';
+import { useAuth } from '../../components/Extension/AuthContext';
 
 const IndexPage = () => {
     const navigate = useNavigate();
+    const { isSignedIn } = useAuth();
     const [showFlow, setShowFlow] = useState(false);
     const [platforms, setPlatforms] = useState([]);
     const [selectedConfig, setSelectedConfig] = useState({
@@ -164,13 +166,24 @@ const IndexPage = () => {
                                     if (selectedConfig.platform && selectedConfig.language) {
                                         // Find the platform object from the platforms array to get its name
                                         const platformObj = platforms.find(p => p._id === selectedConfig.platform);
-                                        // Navigate with state to pass data to FlowEditor component
-                                        navigate('/blog/login', {
-                                            state: {
-                                                platform: platformObj ? platformObj.name : selectedConfig.platform, // Pass platform name instead of ID
-                                                language: selectedConfig.language
-                                            }
-                                        });
+                                        
+                                        if (isSignedIn) {
+                                            // If signed in, go directly to flow editor
+                                            navigate('/flow-editor', {
+                                                state: {
+                                                    platform: platformObj ? platformObj.name : selectedConfig.platform,
+                                                    language: selectedConfig.language
+                                                }
+                                            });
+                                        } else {
+                                            // If not signed in, go to login page
+                                            navigate('/blog/login', {
+                                                state: {
+                                                    platform: platformObj ? platformObj.name : selectedConfig.platform,
+                                                    language: selectedConfig.language
+                                                }
+                                            });
+                                        }
                                     } else {
                                         alert('Please select both platform and language');
                                     }

@@ -140,15 +140,15 @@ const postController = {
         return res.status(401).json("Not authenticated!");
       }
 
-      const role = req?.user?.metadata?.role || "user";
+      const roles = req?.user?.roles || "user";
 
-      if (role === "admin") {
+      if (!roles.includes("admin")) {
         await Post.findByIdAndDelete(req.params.id);
         return res.status(200).json("Post has been deleted");
       }
-
+      console.log(userId)
       const user = await User.findOne({ userId });
-
+      
       const deletedPost = await Post.findOneAndDelete({
         _id: req.params.id,
         user: user._id,

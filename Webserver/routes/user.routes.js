@@ -20,6 +20,6 @@ router.get('/saved', verifyAdmin, userController.getUserSavedPosts);
 router.patch('/save', verifyAdmin, userController.savePost);
 router.put('/:id', verifyAdmin, userController.updateUser);
 router.delete('/:id', verifyAdmin, userController.deleteUser);
-router.get('/me', verifyAdmin, userController.getCurrentUser);
+router.get('/me',verifyToken, userController.getCurrentUser);
 
 module.exports = router;
