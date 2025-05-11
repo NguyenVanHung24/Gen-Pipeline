@@ -10,7 +10,7 @@ import CustomFlowNode from './CustomFlowNode';
 import axios from 'axios';
 import { useAuth } from '../components/Extension/AuthContext';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   HiOutlineCog, 
   HiOutlineServer, 
@@ -56,7 +56,7 @@ const stageTemplates = [
 const FlowGraph = () => {
   const navigate = useNavigate();
   const { isContributor } = useAuth();
-
+  const { platform, language } = useLocation().state || {};
   // Initial nodes based on provided data
   const initialElements = [
     // Nodes
@@ -386,9 +386,9 @@ const FlowGraph = () => {
       const response = await axios.get(`${API_BASE_URL}/pipelines/search`, {
         params: {
           tool: nodeData.currentTool,
-          platform: 'gitlab', // Default platform, can be made dynamic
+          platform: platform, // Use platformId prop passed from FlowEditor
           stage: nodeData.phase,
-          language: 'javascript' // Default language, can be made dynamic
+          language: language // Use language prop passed from FlowEditor
         },
         timeout: 5000
       });
@@ -493,6 +493,15 @@ const FlowGraph = () => {
     <div className="flex h-full">
       {/* Sidebar with stages */}
       <div className="flex flex-col w-72 border-r border-gray-200 bg-white">
+        {/* Add Blog Redirect Button */}
+        <div className="p-3 border-b bg-gray-50">
+          <button
+            onClick={() => navigate('/blog')}
+            className="w-full py-2 px-4 mb-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md transition duration-200 text-sm flex items-center justify-center"
+          >
+            Go to Blog
+          </button>
+        </div>
         {/* Add Stage Panel - Adjusted height */}
         <div className="p-3 border-b h-2/3 flex flex-col">
           <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-2">

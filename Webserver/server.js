@@ -32,6 +32,9 @@ app.use((req, res, next) => {
 });
 
 app.use('/uploads', express.static('uploads'));
+// app.use('/api', (req, res) => {
+//   res.json({ message: 'API endpoint reached' });
+// });
 app.use('/api', apiRoutes);
 app.use('/api/posts', postRoute);
 app.use('/api/users', useRoute);
