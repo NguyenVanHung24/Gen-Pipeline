@@ -201,57 +201,39 @@ const FlowGraph = () => {
 
   // Handle tool drop on node
   const handleToolDropOnNode = (nodeId, tool) => {
-    console.log('Tool dropped on node:', nodeId);
-    console.log('Tool data:', tool);
-    console.log('Current elements:', elements);
-    
-    // Find the node being updated
-    const node = elements.find(el => el.id === nodeId);
-    console.log('Found node:', node);
-    
-    if (!node) {
-      console.error('Node not found:', nodeId);
-      toast.error('Error: Node not found. Please try again.');
-      return;
-    }
+    setElements((els) => {
+      const node = els.find(el => el.id === nodeId);
+      if (!node) {
+        console.error('Node not found:', nodeId);
+        toast.error('Error: Node not found. Please try again.');
+        return els;
+      }
 
-    // Validate if the tool's stage matches the node's stage
-    if (tool.config?.type !== node.data.type) {
-      console.log('Stage validation failed:', {
-        toolType: tool.config?.type,
-        nodeType: node.data.type
-      });
-      toast.error(`Invalid stage! This tool belongs to ${tool.config?.type} stage, but you're dropping it on ${node.data.type} stage.`);
-      return;
-    }
-    
-    setElements((els) => 
-      els.map(el => {
+      if (tool.config?.type !== node.data.type) {
+        toast.error(`Invalid stage! This tool belongs to ${tool.config?.type} stage, but you're dropping it on ${node.data.type} stage.`);
+        return els;
+      }
+
+      toast.success(`${tool.name} added to ${node.data.phase} stage`);
+      return els.map(el => {
         if (el.id === nodeId) {
-          // Update the node with the dropped tool info
-          const updatedData = {
-            ...el.data,
-            currentImage: tool.imagePath,
-            currentTool: tool.name,
-            hasImage: true,
-            analytics: tool.config?.analytics || 0,
-            target: tool.config?.target || 100,
-            toolData: tool,
-            onDropTool: el.data.onDropTool
-          };
-          
-          console.log('Updated node data:', updatedData);
-          
           return {
             ...el,
-            data: updatedData
+            data: {
+              ...el.data,
+              currentImage: tool.imagePath,
+              currentTool: tool.name,
+              hasImage: true,
+              analytics: tool.config?.analytics || 0,
+              target: tool.config?.target || 100,
+              toolData: tool,
+              onDropTool: el.data.onDropTool
+            }
           };
         }
         return el;
-      })
-    );
-
-    toast.success(`${tool.name} added to ${node.data.phase} stage`);
+      });
+    });
   };
 
   // Function to add a new node (stage) to the flow
