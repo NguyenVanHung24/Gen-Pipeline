@@ -72,7 +72,8 @@ const FlowGraph = () => {
         phase: "Secret Scanning",
         type: "Secret Scanning",
         analytics: 0,
-        target: 100
+        target: 100,
+        onDropTool: (tool) => handleToolDropOnNode('1', tool)
       },
     },
     {
@@ -87,7 +88,8 @@ const FlowGraph = () => {
         phase: "Software Composition Analysis",
         type: "Software Composition Analysis",
         analytics: 0,
-        target: 100
+        target: 100,
+        onDropTool: (tool) => handleToolDropOnNode('2', tool)
       },
     },
     // Edge
@@ -251,25 +253,6 @@ const FlowGraph = () => {
 
     toast.success(`${tool.name} added to ${node.data.phase} stage`);
   };
-
-  // Add onDropTool to initial nodes after component mounts
-  useEffect(() => {
-    setElements(els => 
-      els.map(el => {
-        // Only update nodes (not edges)
-        if (el.type === 'customNode') {
-          return {
-            ...el,
-            data: {
-              ...el.data,
-              onDropTool: (tool) => handleToolDropOnNode(el.id, tool)
-            }
-          };
-        }
-        return el;
-      })
-    );
-  }, []);  // Empty dependency array means this runs once after the initial render
 
   // Function to add a new node (stage) to the flow
   const addNewNode = (stageTemplate) => {
